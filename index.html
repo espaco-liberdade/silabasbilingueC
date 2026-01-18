@@ -104,7 +104,7 @@
                 { pt: "CE-RE-JA", en: "Cherry", tr: "(TCHÉ-RI)", emoji: "🍒", s1: "I love cherries.", t1: "Eu amo cerejas.", st1: "(/ai lâv tché-ris/)", s2: "The cherry is red.", t2: "A cereja é vermelha.", st2: "(/dâ tché-ri iz réd/)" },
                 { pt: "CES-TA", en: "Basket", tr: "(BÉS-KIT)", emoji: "🧺", s1: "A basket of flowers.", t1: "Uma cesta de flores.", st1: "(/ê bés-kit ôv fláu-êrs/)", s2: "Put it in the basket.", t2: "Coloque na cesta.", st2: "(/put it in dâ bés-kit/)" },
                 { pt: "CE-GO", en: "Blind", tr: "(BLÁIND)", emoji: "🦯", s1: "The blind man is kind.", t1: "O homem cego é gentil.", st1: "(/dâ bláind mén iz káind/)", s2: "A guide dog for the blind.", t2: "Um cão guia para o cego.", st2: "(/ê gáid dóg fôr dâ bláind/)" },
-                { pt: "CE-GO-NHA", en: "Stork", tr: "(STÓRK)", emoji: "🦢", s1: "The stork is white.", t1: "A cegonha é branca.", st1: "(/dâ stórk iz uáit/)", s2: "A baby with the stork.", t2: "Um bebê com a cegonha.", st2: "(/ê bêi-bi uíd dâ stórk/)" },
+                { pt: "CE-GO-NHA", en: "Stork", tr: "(STÓRK)", emoji: "🦢", s1: "The stork is white.", t1: "A cegonha é branca.", st1: "(/dâ uáit suón iz uáit/)", s2: "A baby with the stork.", t2: "Um bebê com a cegonha.", st2: "(/ê bêi-bi uíd dâ stórk/)" },
                 { pt: "CEN-TO-PEI-A", en: "Centipede", tr: "(SÉN-TI-PÍD)", emoji: "🐛", s1: "The centipede is slow.", t1: "A centopeia é lenta.", st1: "(/dâ sén-ti-píd iz slóu/)", s2: "Many legs on a centipede.", t2: "Muitas pernas em uma centopeia.", st2: "(/mé-ni légs on ê sén-ti-píd/)" },
                 { pt: "CÉ-RE-BRO", en: "Brain", tr: "(BRÊIN)", emoji: "🧠", s1: "Use your brain.", t1: "Use seu cérebro.", st1: "(/iuz iór brêin/)", s2: "The brain is smart.", t2: "O cérebro é esperto.", st2: "(/dâ brêin iz smárt/)" },
                 { pt: "CÉ-DU-LA", en: "Banknote", tr: "(BÉNK-NÔUT)", emoji: "💵", s1: "This is a paper banknote.", t1: "Esta é uma cédula de papel.", st1: "(/dis iz ê pêi-pêr bénk-nôut/)", s2: "A green banknote.", t2: "Uma cédula verde.", st2: "(/ê grin bénk-nôut/)" },
@@ -209,6 +209,9 @@
             }
         }
 
+        /**
+         * FUNÇÃO DE ÁUDIO PT-BR
+         */
         function speakPT(text) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
@@ -220,20 +223,37 @@
             }
         }
 
+        /**
+         * FUNÇÃO DE ÁUDIO EN-US (Melhorada)
+         */
         function speakEN(text) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
                 const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'en-US';
-                utterance.rate = 0.9;
+                
+                // Prioriza vozes nativas de alta qualidade (Google, Siri, Samantha)
                 const voices = window.speechSynthesis.getVoices();
-                const enVoice = voices.find(v => v.lang.startsWith('en-') && v.name.includes('Google'));
-                if (enVoice) utterance.voice = enVoice;
+                let selectedVoice = voices.find(v => v.lang === 'en-US' && (v.name.includes('Google') || v.name.includes('Natural'))) ||
+                                    voices.find(v => v.lang === 'en-US' && v.name.includes('Siri')) ||
+                                    voices.find(v => v.lang.startsWith('en-US')) ||
+                                    voices.find(v => v.lang.startsWith('en'));
+
+                if (selectedVoice) {
+                    utterance.voice = selectedVoice;
+                    utterance.lang = selectedVoice.lang; // Garante que o idioma combine com a voz
+                } else {
+                    utterance.lang = 'en-US';
+                }
+
+                utterance.rate = 0.85; // Levemente mais lento para clareza educacional
+                utterance.pitch = 1.0;
+
                 window.speechSynthesis.speak(utterance);
             }
         }
 
         window.onload = renderBlocks;
+        // Reinicializa a lista de vozes para navegadores que carregam async
         window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
     </script>
 </body>
