@@ -3,93 +3,266 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sílaba C Completa - Casa Bilíngue Kids</title>
+    <title>Sílaba C (Jogo) - Casa Bilíngue Kids</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Poppins:wght@400;500;600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Poppins', sans-serif; background-color: #f0f7ff; color: #333; scroll-behavior: smooth; }
+        /* Configurações Globais */
+        body { font-family: 'Poppins', sans-serif; background-color: #f0f7ff; color: #333; scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
         .kids-font { font-family: 'Fredoka', sans-serif; }
-        .card-word { background: white; border-radius: 24px; border: 4px solid #e0e7ff; transition: all 0.3s ease; height: 100%; display: flex; flex-direction: column; }
-        .card-word:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
-        .syllable-btn { background: #f3f0ff; border: 2px solid #ddd6fe; color: #6d28d9; padding: 6px 12px; border-radius: 12px; font-weight: 700; font-size: 1.2rem; transition: all 0.2s; cursor: pointer; }
-        .syllable-btn:hover { background: #9b59b6; color: white; transform: scale(1.1); }
-        .btn-audio { background: #2ecc71; color: white; padding: 5px 12px; border-radius: 50px; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; border: none; }
-        .transcription { color: #e67e22; font-style: italic; font-size: 0.85rem; font-weight: 500; }
-        .translation-text { color: #555; font-size: 0.8rem; font-weight: 500; display: block; margin-top: -2px; }
-        .nav-dot { width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: white; font-weight: bold; text-decoration: none; transition: transform 0.2s; }
-        .nav-dot:hover { transform: scale(1.2); }
-        .header-sticky { position: sticky; top: 0; z-index: 50; background: rgba(240, 247, 255, 0.95); backdrop-filter: blur(8px); padding-bottom: 10px; border-bottom: 2px solid #e0e7ff; }
-        .btn-nav-top { transition: all 0.3s; box-shadow: 0 4px 0 rgba(0,0,0,0.1); }
-        .btn-nav-top:hover { transform: translateY(-2px); box-shadow: 0 6px 0 rgba(0,0,0,0.1); }
-        .btn-nav-top:active { transform: translateY(2px); box-shadow: 0 0 0 rgba(0,0,0,0.1); }
+        
+        /* Cartões */
+        .card-word { 
+            background: white; 
+            border-radius: 24px; 
+            border: 3px solid #e0e7ff; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: all 0.3s ease; 
+            height: 100%; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden;
+        }
+        .card-word:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); border-color: #a78bfa; }
+        
+        /* Botões de Sílaba (Interativos para o Jogo) */
+        .syllable-game-btn { 
+            background: #f3f0ff; 
+            border: 2px solid #ddd6fe; 
+            color: #6d28d9; 
+            padding: 8px 16px; 
+            border-radius: 12px; 
+            font-weight: 700; 
+            font-size: 1.3rem; 
+            cursor: pointer; 
+            font-family: 'Fredoka', sans-serif;
+            transition: all 0.2s;
+            user-select: none;
+            min-width: 50px;
+        }
+        .syllable-game-btn:hover { background: #e9d5ff; transform: scale(1.05); }
+        .syllable-game-btn:active { transform: scale(0.95); }
+
+        /* Estados do Jogo */
+        .syllable-correct {
+            background-color: #22c55e !important; /* Green 500 */
+            border-color: #16a34a !important; /* Green 600 */
+            color: white !important;
+            transform: scale(1.1);
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+            pointer-events: none; /* Impede clicar novamente */
+        }
+        
+        .syllable-wrong {
+            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+            background-color: #fee2e2 !important;
+            border-color: #ef4444 !important;
+            color: #b91c1c !important;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        /* Botão Imagem */
+        .emoji-container {
+            position: relative;
+        }
+        .emoji-btn {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .emoji-btn.completed {
+            animation: pulse-green 1s infinite;
+        }
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+
+        /* Botões de Áudio (Inglês) */
+        .btn-audio { 
+            background: #e0f2fe; color: #0284c7; width: 32px; height: 32px; border-radius: 50%; 
+            display: inline-flex; align-items: center; justify-content: center; cursor: pointer; 
+            border: 1px solid #bae6fd; transition: background 0.2s; flex-shrink: 0;
+        }
+        .btn-audio:hover { background: #0ea5e9; color: white; }
+        
+        /* Tipografia */
+        .transcription { color: #ea580c; font-weight: 600; font-size: 0.9rem; }
+        .translation-text { color: #64748b; font-size: 0.85rem; font-weight: 500; display: block; margin-top: 2px; }
+        .simplified-pron { color: #7c3aed; font-size: 0.8rem; font-style: italic; opacity: 0.9; }
+
+        /* Navegação */
+        .header-sticky { position: sticky; top: 0; z-index: 50; background: rgba(240, 247, 255, 0.95); backdrop-filter: blur(12px); padding: 10px 0; border-bottom: 1px solid #e0e7ff; }
+        .nav-dot { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: white; font-weight: bold; font-family: 'Fredoka', sans-serif; text-decoration: none; transition: transform 0.2s; }
+        .nav-dot:hover { transform: scale(1.15); }
+
+        /* Vocab Grid */
+        .vocab-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+        @media (min-width: 768px) { .vocab-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 1024px) { .vocab-grid { grid-template-columns: repeat(3, 1fr); } }
+        .vocab-item { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; }
+        .vocab-content { flex: 1; display: flex; flex-direction: column; }
+        .vocab-en { font-family: 'Inter', sans-serif; font-weight: 700; color: #1e293b; font-size: 1.1rem; }
+        .vocab-pt { font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: 600; margin-top: 2px; }
+        .vocab-ipa { font-family: 'Courier New', monospace; color: #f59e0b; font-size: 0.85rem; margin-top: 2px; }
+        
+        .btn-nav-main { transition: all 0.3s; box-shadow: 0 4px 0 rgba(0,0,0,0.1); display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-nav-main:hover { transform: translateY(-2px); box-shadow: 0 6px 0 rgba(0,0,0,0.1); }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="p-3 md:p-6 pb-20">
 
-    <div class="max-w-6xl mx-auto">
-        <!-- Navegação de Topo Principal -->
-        <div class="flex flex-col sm:flex-row justify-center gap-4 mb-10">
-            <a href="https://espaco-liberdade.github.io/CasaBilingueKids/" class="btn-nav-top bg-purple-600 text-white font-bold py-3 px-6 rounded-2xl text-center">
-                🏠 Voltar ao Menu Principal
-            </a>
-            <a href="https://espaco-liberdade.github.io/silabasbilingue" class="btn-nav-top bg-orange-500 text-white font-bold py-3 px-6 rounded-2xl text-center">
-                🔤 Menu das Sílabas
-            </a>
+    <div class="max-w-7xl mx-auto">
+        <!-- Navegação Topo -->
+        <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
+            <a href="https://espaco-liberdade.github.io/inglesipa/" class="btn-nav-main bg-indigo-600 text-white font-bold py-3 px-8 rounded-full text-center w-full sm:w-auto"><span>🏠</span> Voltar ao Menu</a>
+            <a href="https://espaco-liberdade.github.io/silabasbilingue" class="btn-nav-main bg-orange-500 text-white font-bold py-3 px-8 rounded-full text-center w-full sm:w-auto"><span>🔤</span> Menu Sílabas</a>
         </div>
 
-        <!-- Header -->
         <header class="text-center mb-6">
-            <h1 class="kids-font text-4xl text-purple-600">CASA BILÍNGUE KIDS</h1>
-            <p class="text-orange-500 font-semibold italic text-sm">O jeito mais natural de Criar um pequeno bilíngue</p>
-            <div class="inline-block bg-yellow-400 px-6 py-1 rounded-full mt-2 shadow-md">
-                <span class="kids-font text-lg text-white">Módulo Sílaba Bilíngue - Letra C</span>
+            <h1 class="kids-font text-4xl md:text-5xl text-purple-600 mb-2 drop-shadow-sm">CASA BILÍNGUE KIDS</h1>
+            <p class="text-orange-500 font-semibold italic text-sm md:text-base">O jeito mais natural de criar um pequeno bilíngue</p>
+            <div class="inline-block bg-yellow-400 px-6 py-2 rounded-full mt-4 shadow-md transform rotate-1">
+                <span class="kids-font text-xl text-white tracking-wide">Módulo: Letra C (Jogo das Sílabas)</span>
             </div>
-            <p class="text-gray-400 text-xs mt-1">Autor: Fábio de Almeida</p>
         </header>
 
-        <!-- Menu de Navegação Rápida -->
-        <div class="header-sticky mb-10">
-            <nav class="flex justify-center gap-3 py-4 flex-wrap">
+        <div class="header-sticky mb-8 rounded-xl">
+            <nav class="flex justify-center gap-2 md:gap-4 py-2 flex-wrap px-2">
                 <a href="#sec-ca" class="nav-dot bg-red-400">CA</a>
                 <a href="#sec-ce" class="nav-dot bg-blue-400">CE</a>
                 <a href="#sec-ci" class="nav-dot bg-green-400">CI</a>
                 <a href="#sec-co" class="nav-dot bg-orange-400">CO</a>
                 <a href="#sec-cu" class="nav-dot bg-purple-400">CU</a>
-                <a href="#sec-cao" class="nav-dot bg-yellow-600">CÃO</a>
+                <a href="#sec-cao" class="nav-dot bg-yellow-500 text-sm">CÃO</a>
             </nav>
-            <div class="text-center text-[10px] text-gray-500 uppercase tracking-widest">Toque nas sílabas para ouvir o som</div>
+            <div class="text-center mt-2">
+                <span class="text-[11px] font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-200">🎮 DESAFIO: Clique nas sílabas na ordem certa para formar a palavra!</span>
+            </div>
         </div>
 
-        <!-- SEÇÕES -->
         <div id="content-area">
-            <section id="sec-ca" class="mb-20">
-                <h2 class="kids-font text-3xl text-red-500 border-b-4 border-red-200 mb-8 pb-2">Lição 7: Família do CA</h2>
+            <section id="sec-ca" class="mb-16 scroll-mt-32">
+                <div class="flex items-center gap-3 mb-6 border-b-4 border-red-100 pb-2">
+                    <div class="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center text-white font-bold shadow-md">7</div>
+                    <h2 class="kids-font text-3xl text-red-500">Família do CA</h2>
+                </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="grid-ca"></div>
             </section>
-            <section id="sec-ce" class="mb-20">
-                <h2 class="kids-font text-3xl text-blue-500 border-b-4 border-blue-200 mb-8 pb-2">Lição 8: Família do CE</h2>
+
+            <section id="sec-ce" class="mb-16 scroll-mt-32">
+                <div class="flex items-center gap-3 mb-6 border-b-4 border-blue-100 pb-2">
+                    <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold shadow-md">8</div>
+                    <h2 class="kids-font text-3xl text-blue-500">Família do CE</h2>
+                </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="grid-ce"></div>
             </section>
-            <section id="sec-ci" class="mb-20">
-                <h2 class="kids-font text-3xl text-green-500 border-b-4 border-green-200 mb-8 pb-2">Lição 9: Família do CI</h2>
+
+            <section id="sec-ci" class="mb-16 scroll-mt-32">
+                <div class="flex items-center gap-3 mb-6 border-b-4 border-green-100 pb-2">
+                    <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-bold shadow-md">9</div>
+                    <h2 class="kids-font text-3xl text-green-500">Família do CI</h2>
+                </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="grid-ci"></div>
             </section>
-            <section id="sec-co" class="mb-20">
-                <h2 class="kids-font text-3xl text-orange-500 border-b-4 border-orange-200 mb-8 pb-2">Lição 10: Família do CO</h2>
+
+            <section id="sec-co" class="mb-16 scroll-mt-32">
+                <div class="flex items-center gap-3 mb-6 border-b-4 border-orange-100 pb-2">
+                    <div class="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold shadow-md">10</div>
+                    <h2 class="kids-font text-3xl text-orange-500">Família do CO</h2>
+                </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="grid-co"></div>
             </section>
-            <section id="sec-cu" class="mb-20">
-                <h2 class="kids-font text-3xl text-purple-500 border-b-4 border-purple-200 mb-8 pb-2">Lição 11: Família do CU</h2>
+
+            <section id="sec-cu" class="mb-16 scroll-mt-32">
+                <div class="flex items-center gap-3 mb-6 border-b-4 border-purple-100 pb-2">
+                    <div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold shadow-md">11</div>
+                    <h2 class="kids-font text-3xl text-purple-500">Família do CU</h2>
+                </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="grid-cu"></div>
             </section>
-            <section id="sec-cao" class="mb-20">
-                <h2 class="kids-font text-3xl text-yellow-700 border-b-4 border-yellow-200 mb-8 pb-2">Lição 12: O Som do CÃO</h2>
+
+            <section id="sec-cao" class="mb-16 scroll-mt-32">
+                <div class="flex items-center gap-3 mb-6 border-b-4 border-yellow-100 pb-2">
+                    <div class="w-10 h-10 bg-yellow-600 rounded-full flex items-center justify-center text-white font-bold shadow-md">12</div>
+                    <h2 class="kids-font text-3xl text-yellow-600">O Som do CÃO</h2>
+                </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="grid-cao"></div>
             </section>
         </div>
+
+        <section class="mt-20 bg-white p-6 rounded-3xl border-4 border-gray-100 shadow-xl">
+            <div class="text-center mb-8">
+                <h2 class="kids-font text-3xl text-gray-700">📚 Resumo do Vocabulário</h2>
+                <p class="text-gray-400 text-sm">Toque no alto-falante para praticar a pronúncia</p>
+            </div>
+            <div id="vocab-container" class="vocab-grid"></div>
+        </section>
+
+        <div class="flex flex-col sm:flex-row justify-center gap-4 mt-12 mb-8">
+            <a href="https://espaco-liberdade.github.io/inglesipa/" class="btn-nav-main bg-indigo-600 text-white font-bold py-4 px-8 rounded-2xl text-center w-full sm:w-auto text-lg"><span>🏠</span> Voltar ao Menu Principal</a>
+        </div>
+        
+        <footer class="text-center text-gray-400 text-xs pb-4">
+            <p>&copy; 2024 Casa Bilíngue Kids - Desenvolvido por Fábio de Almeida</p>
+        </footer>
     </div>
 
     <script>
+        // --- CONFIGURAÇÃO DE ÁUDIO (SONS DE JOGO) ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            const now = audioCtx.currentTime;
+
+            if (type === 'plim') {
+                // Som de Acerto (agudo e brilhante)
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(880, now); // Nota Lá
+                oscillator.frequency.exponentialRampToValueAtTime(1760, now + 0.1);
+                gainNode.gain.setValueAtTime(0.1, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+                oscillator.start(now);
+                oscillator.stop(now + 0.5);
+            } else if (type === 'error') {
+                // Som de Erro (grave)
+                oscillator.type = 'sawtooth';
+                oscillator.frequency.setValueAtTime(150, now);
+                oscillator.frequency.linearRampToValueAtTime(100, now + 0.2);
+                gainNode.gain.setValueAtTime(0.1, now);
+                gainNode.gain.linearRampToValueAtTime(0.001, now + 0.3);
+                oscillator.start(now);
+                oscillator.stop(now + 0.3);
+            } else if (type === 'success') {
+                // Som de Vitória (Acorde Maior)
+                [523.25, 659.25, 783.99].forEach((freq, i) => { // Dó Maior
+                    const osc = audioCtx.createOscillator();
+                    const gn = audioCtx.createGain();
+                    osc.connect(gn);
+                    gn.connect(audioCtx.destination);
+                    osc.type = 'triangle';
+                    osc.frequency.value = freq;
+                    gn.gain.setValueAtTime(0.1, now + (i * 0.1));
+                    gn.gain.linearRampToValueAtTime(0.001, now + 0.8 + (i * 0.1));
+                    osc.start(now + (i * 0.1));
+                    osc.stop(now + 1.2);
+                });
+            }
+        }
+
+        // --- DADOS ---
         const data = {
             ca: [
                 { pt: "CA-SA", en: "House", tr: "(HÁUSS)", emoji: "🏠", s1: "I live in a big house.", t1: "Eu moro em uma casa grande.", st1: "(/ai liv in ê big háuss/)", s2: "My house is blue.", t2: "Minha casa é azul.", st2: "(/mai háuss iz blu/)" },
@@ -173,57 +346,152 @@
             ]
         };
 
+        // --- LÓGICA DO JOGO ---
+
+        // Função para embaralhar array
+        function shuffle(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        // Verifica o clique na sílaba
+        window.checkSyllable = function(btn, fullWord, correctSyllableText, cardId) {
+            const container = document.getElementById(`syllables-${cardId}`);
+            const currentIndex = parseInt(container.dataset.currentIndex);
+            const correctOrder = fullWord.split("-");
+
+            // Verifica se a sílaba clicada corresponde à esperada na ordem atual
+            if (correctSyllableText === correctOrder[currentIndex]) {
+                // ACERTOU
+                playSound('plim');
+                btn.classList.add('syllable-correct');
+                container.dataset.currentIndex = currentIndex + 1;
+
+                // Verifica se completou a palavra
+                if (currentIndex + 1 === correctOrder.length) {
+                    setTimeout(() => {
+                        playSound('success');
+                        const emojiBtn = document.getElementById(`emoji-${cardId}`);
+                        emojiBtn.classList.add('completed'); // Efeito visual na imagem
+                        
+                        // Fala a palavra completa
+                        speakSlowPT(fullWord);
+                    }, 500);
+                }
+            } else {
+                // ERROU
+                playSound('error');
+                btn.classList.add('syllable-wrong');
+                setTimeout(() => {
+                    btn.classList.remove('syllable-wrong');
+                }, 500);
+            }
+        };
+
         function renderBlocks() {
+            const vocabContainer = document.getElementById('vocab-container');
+            let cardCounter = 0;
+
             for (const section in data) {
                 const container = document.getElementById(`grid-${section}`);
+                if (!container) continue;
+
                 data[section].forEach(item => {
-                    const syllables = item.pt.split("-");
-                    let sylButtons = syllables.map(s => `<button onclick="speakPT('${s}')" class="syllable-btn">${s}</button>`).join("");
+                    cardCounter++;
+                    const cardId = `card-${cardCounter}`;
+                    const syllablesCorrect = item.pt.split("-");
+                    
+                    // Se tiver mais de 1 sílaba, embaralha. Se for 1, mantém (clica e ganha).
+                    const syllablesToRender = syllablesCorrect.length > 1 ? shuffle(syllablesCorrect) : syllablesCorrect;
+                    
+                    let sylButtons = syllablesToRender.map(s => 
+                        `<button 
+                            onclick="checkSyllable(this, '${item.pt}', '${s}', '${cardId}')" 
+                            class="syllable-game-btn"
+                        >${s}</button>`
+                    ).join("");
                     
                     const card = `
-                        <div class="card-word p-4 flex flex-col items-center gap-4">
-                            <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center text-4xl shadow-inner">${item.emoji}</div>
-                            <div class="w-full text-center flex-1 flex flex-col justify-between">
-                                <div>
-                                    <div class="flex gap-1 mb-3 justify-center flex-wrap">${sylButtons}</div>
-                                    <div class="flex items-center gap-2 mb-3 justify-center">
-                                        <span class="text-xl font-bold text-blue-600 uppercase">${item.en}</span>
-                                        <span class="transcription">${item.tr}</span>
-                                        <button onclick="speakEN('${item.en}')" class="btn-audio">🔊</button>
-                                    </div>
+                        <div class="card-word">
+                            <div class="p-5 flex flex-col items-center gap-4 h-full">
+                                <div id="emoji-${cardId}" onclick="speakSlowPT('${item.pt}')" class="emoji-container emoji-btn w-24 h-24 bg-gradient-to-br from-indigo-50 to-white rounded-full flex items-center justify-center text-5xl shadow-inner border border-indigo-100" title="Toque para ouvir em Português">
+                                    ${item.emoji}
                                 </div>
-                                <div class="bg-gray-50 p-3 rounded-xl border-l-4 border-blue-300 text-left space-y-2 mt-auto">
-                                    <div class="mb-2">
-                                        <span class="text-[11px] font-bold block">1. ${item.s1}</span>
-                                        <span class="translation-text">${item.t1}</span>
-                                        <div class="flex items-center gap-2 mt-1">
-                                            <span class="transcription text-[9px]">${item.st1}</span>
-                                            <button onclick="speakEN('${item.s1}')" class="btn-audio text-[9px] py-0 px-2">🔊</button>
-                                        </div>
+                                
+                                <div class="w-full text-center flex-1 flex flex-col">
+                                    <!-- Container das Sílabas com Controle de Estado -->
+                                    <div id="syllables-${cardId}" data-current-index="0" class="flex gap-2 mb-4 justify-center flex-wrap">
+                                        ${sylButtons}
                                     </div>
-                                    <div>
-                                        <span class="text-[11px] font-bold block">2. ${item.s2}</span>
-                                        <span class="translation-text">${item.t2}</span>
-                                        <div class="flex items-center gap-2 mt-1">
-                                            <span class="transcription text-[9px]">${item.st2}</span>
-                                            <button onclick="speakEN('${item.s2}')" class="btn-audio text-[9px] py-0 px-2">🔊</button>
+                                    
+                                    <div class="bg-indigo-50 rounded-xl p-3 mb-4 border border-indigo-100">
+                                        <div class="flex items-center justify-center gap-3">
+                                            <span class="text-2xl font-bold text-indigo-700 uppercase tracking-wide font-sans">${item.en}</span>
+                                            <button onclick="speakEN('${item.en}')" class="btn-audio shadow-sm" aria-label="Ouvir em inglês">🔊</button>
+                                        </div>
+                                        <span class="transcription font-mono mt-1 block">${item.tr}</span>
+                                    </div>
+
+                                    <div class="bg-gray-50 p-4 rounded-xl border-l-4 border-indigo-300 text-left space-y-4 mt-auto shadow-sm">
+                                        <div class="relative group">
+                                            <div class="flex justify-between items-start gap-2">
+                                                <span class="text-[13px] font-bold text-gray-800 leading-tight">${item.s1}</span>
+                                                <button onclick="speakEN('${item.s1.replace(/'/g, "\\'")}')" class="btn-audio w-6 h-6 text-[10px]" aria-label="Ouvir frase 1">🔊</button>
+                                            </div>
+                                            <span class="translation-text">${item.t1}</span>
+                                            <span class="simplified-pron mt-1 block">${item.st1}</span>
+                                        </div>
+                                        
+                                        <div class="relative group border-t border-gray-200 pt-3">
+                                            <div class="flex justify-between items-start gap-2">
+                                                <span class="text-[13px] font-bold text-gray-800 leading-tight">${item.s2}</span>
+                                                <button onclick="speakEN('${item.s2.replace(/'/g, "\\'")}')" class="btn-audio w-6 h-6 text-[10px]" aria-label="Ouvir frase 2">🔊</button>
+                                            </div>
+                                            <span class="translation-text">${item.t2}</span>
+                                            <span class="simplified-pron mt-1 block">${item.st2}</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>`;
+                    
                     container.innerHTML += card;
+
+                    const vocabCard = `
+                        <div class="vocab-item">
+                            <div class="vocab-content">
+                                <span class="vocab-en">${item.en}</span>
+                                <span class="vocab-ipa">${item.tr}</span>
+                                <span class="vocab-pt">${item.pt.replace(/-/g, "")}</span>
+                            </div>
+                            <button onclick="speakEN('${item.en}')" class="btn-audio" aria-label="Ouvir ${item.en}">🔊</button>
+                        </div>
+                    `;
+                    vocabContainer.innerHTML += vocabCard;
                 });
             }
         }
 
-        function speakPT(text) {
+        // --- SISTEMA DE FALA ---
+        let voices = [];
+        function loadVoices() { voices = window.speechSynthesis.getVoices(); }
+        if (window.speechSynthesis.onvoiceschanged !== undefined) {
+            window.speechSynthesis.onvoiceschanged = loadVoices;
+        }
+        loadVoices();
+
+        function speakSlowPT(textWithHyphens) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(text.toLowerCase());
+                const cleanText = textWithHyphens.replace(/-/g, "").toLowerCase();
+                const utterance = new SpeechSynthesisUtterance(cleanText);
                 utterance.lang = 'pt-BR';
                 utterance.rate = 0.8; 
-                utterance.pitch = 1.1; 
+                utterance.pitch = 1.0; 
                 window.speechSynthesis.speak(utterance);
             }
         }
@@ -232,25 +500,33 @@
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
                 const utterance = new SpeechSynthesisUtterance(text);
-                const voices = window.speechSynthesis.getVoices();
-                let selectedVoice = voices.find(v => v.lang === 'en-US' && (v.name.includes('Google') || v.name.includes('Natural'))) ||
-                                    voices.find(v => v.lang === 'en-US' && v.name.includes('Siri')) ||
-                                    voices.find(v => v.lang.startsWith('en-US')) ||
-                                    voices.find(v => v.lang.startsWith('en'));
+                
+                if (voices.length === 0) loadVoices();
+                const targetVoice = 
+                    voices.find(v => v.lang === 'en-US' && v.name.includes('Google')) || 
+                    voices.find(v => v.lang === 'en-US' && (v.name.includes('Premium') || v.name.includes('Enhanced'))) ||
+                    voices.find(v => v.lang === 'en-US') ||
+                    voices.find(v => v.lang.startsWith('en'));
 
-                if (selectedVoice) {
-                    utterance.voice = selectedVoice;
-                    utterance.lang = selectedVoice.lang;
-                } else {
-                    utterance.lang = 'en-US';
-                }
-                utterance.rate = 0.85;
+                if (targetVoice) { utterance.voice = targetVoice; utterance.lang = targetVoice.lang; } 
+                else { utterance.lang = 'en-US'; }
+                
+                utterance.rate = 0.85; 
                 window.speechSynthesis.speak(utterance);
             }
         }
 
-        window.onload = renderBlocks;
-        window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+        window.onload = function() {
+            renderBlocks();
+            setTimeout(loadVoices, 500);
+            
+            // Ativa o contexto de áudio na primeira interação do usuário para navegadores que bloqueiam autoplay
+            document.body.addEventListener('click', function() {
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+            }, { once: true });
+        };
     </script>
 </body>
 </html>
