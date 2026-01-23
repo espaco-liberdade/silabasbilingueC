@@ -39,18 +39,19 @@
             transition: all 0.2s;
             user-select: none;
             min-width: 50px;
+            -webkit-tap-highlight-color: transparent;
         }
         .syllable-game-btn:hover { background: #e9d5ff; transform: scale(1.05); }
         .syllable-game-btn:active { transform: scale(0.95); }
 
         /* Estados do Jogo */
         .syllable-correct {
-            background-color: #22c55e !important; /* Green 500 */
-            border-color: #16a34a !important; /* Green 600 */
+            background-color: #22c55e !important;
+            border-color: #16a34a !important;
             color: white !important;
             transform: scale(1.1);
             box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
-            pointer-events: none; /* Impede clicar novamente */
+            pointer-events: none;
         }
         
         .syllable-wrong {
@@ -68,27 +69,21 @@
         }
 
         /* Botão Imagem */
-        .emoji-container {
-            position: relative;
-        }
-        .emoji-btn {
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        .emoji-btn.completed {
-            animation: pulse-green 1s infinite;
-        }
+        .emoji-container { position: relative; }
+        .emoji-btn { cursor: pointer; transition: transform 0.2s; -webkit-tap-highlight-color: transparent; }
+        .emoji-btn.completed { animation: pulse-green 1s infinite; }
         @keyframes pulse-green {
             0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
             70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
             100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
         }
 
-        /* Botões de Áudio (Inglês) */
+        /* Botões de Áudio */
         .btn-audio { 
             background: #e0f2fe; color: #0284c7; width: 32px; height: 32px; border-radius: 50%; 
             display: inline-flex; align-items: center; justify-content: center; cursor: pointer; 
             border: 1px solid #bae6fd; transition: background 0.2s; flex-shrink: 0;
+            -webkit-tap-highlight-color: transparent;
         }
         .btn-audio:hover { background: #0ea5e9; color: white; }
         
@@ -121,8 +116,8 @@
     <div class="max-w-7xl mx-auto">
         <!-- Navegação Topo -->
         <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
-            <a href="https://espaco-liberdade.github.io/inglesipa/" class="btn-nav-main bg-indigo-600 text-white font-bold py-3 px-8 rounded-full text-center w-full sm:w-auto"><span>🏠</span> Voltar ao Menu</a>
-            <a href="https://espaco-liberdade.github.io/silabasbilingue" class="btn-nav-main bg-orange-500 text-white font-bold py-3 px-8 rounded-full text-center w-full sm:w-auto"><span>🔤</span> Menu Sílabas</a>
+            <a href="https://espaco-liberdade.github.io/CasaBilingueKids/" class="btn-nav-main bg-indigo-600 text-white font-bold py-3 px-8 rounded-full text-center w-full sm:w-auto"><span>🏠</span> Voltar ao Menu</a>
+            <a href="https://espaco-liberdade.github.io/silabasbilingue/" class="btn-nav-main bg-orange-500 text-white font-bold py-3 px-8 rounded-full text-center w-full sm:w-auto"><span>🔤</span> Menu Sílabas</a>
         </div>
 
         <header class="text-center mb-6">
@@ -143,7 +138,7 @@
                 <a href="#sec-cao" class="nav-dot bg-yellow-500 text-sm">CÃO</a>
             </nav>
             <div class="text-center mt-2">
-                <span class="text-[11px] font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-200">🎮 DESAFIO: Clique nas sílabas na ordem certa para formar a palavra!</span>
+                <span class="text-[11px] font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-200">🎮 DESAFIO: Clique nas sílabas embaralhadas na ordem certa!</span>
             </div>
         </div>
 
@@ -206,7 +201,7 @@
         </section>
 
         <div class="flex flex-col sm:flex-row justify-center gap-4 mt-12 mb-8">
-            <a href="https://espaco-liberdade.github.io/inglesipa/" class="btn-nav-main bg-indigo-600 text-white font-bold py-4 px-8 rounded-2xl text-center w-full sm:w-auto text-lg"><span>🏠</span> Voltar ao Menu Principal</a>
+            <a href="https://espaco-liberdade.github.io/CasaBilingueKids/" class="btn-nav-main bg-indigo-600 text-white font-bold py-4 px-8 rounded-2xl text-center w-full sm:w-auto text-lg"><span>🏠</span> Voltar ao Menu Principal</a>
         </div>
         
         <footer class="text-center text-gray-400 text-xs pb-4">
@@ -215,11 +210,22 @@
     </div>
 
     <script>
-        // --- CONFIGURAÇÃO DE ÁUDIO (SONS DE JOGO) ---
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        // --- CONFIGURAÇÃO DE ÁUDIO PARA IOS/MOBILE ---
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
 
         function playSound(type) {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
+            initAudio(); // Tenta destravar áudio no toque
+            if (!audioCtx) return;
+
             const oscillator = audioCtx.createOscillator();
             const gainNode = audioCtx.createGain();
             oscillator.connect(gainNode);
@@ -228,33 +234,30 @@
             const now = audioCtx.currentTime;
 
             if (type === 'plim') {
-                // Som de Acerto (agudo e brilhante)
                 oscillator.type = 'sine';
-                oscillator.frequency.setValueAtTime(880, now); // Nota Lá
+                oscillator.frequency.setValueAtTime(880, now);
                 oscillator.frequency.exponentialRampToValueAtTime(1760, now + 0.1);
-                gainNode.gain.setValueAtTime(0.1, now);
+                gainNode.gain.setValueAtTime(0.3, now);
                 gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
                 oscillator.start(now);
                 oscillator.stop(now + 0.5);
             } else if (type === 'error') {
-                // Som de Erro (grave)
                 oscillator.type = 'sawtooth';
                 oscillator.frequency.setValueAtTime(150, now);
                 oscillator.frequency.linearRampToValueAtTime(100, now + 0.2);
-                gainNode.gain.setValueAtTime(0.1, now);
+                gainNode.gain.setValueAtTime(0.3, now);
                 gainNode.gain.linearRampToValueAtTime(0.001, now + 0.3);
                 oscillator.start(now);
                 oscillator.stop(now + 0.3);
             } else if (type === 'success') {
-                // Som de Vitória (Acorde Maior)
-                [523.25, 659.25, 783.99].forEach((freq, i) => { // Dó Maior
+                [523.25, 659.25, 783.99].forEach((freq, i) => {
                     const osc = audioCtx.createOscillator();
                     const gn = audioCtx.createGain();
                     osc.connect(gn);
                     gn.connect(audioCtx.destination);
                     osc.type = 'triangle';
                     osc.frequency.value = freq;
-                    gn.gain.setValueAtTime(0.1, now + (i * 0.1));
+                    gn.gain.setValueAtTime(0.2, now + (i * 0.1));
                     gn.gain.linearRampToValueAtTime(0.001, now + 0.8 + (i * 0.1));
                     osc.start(now + (i * 0.1));
                     osc.stop(now + 1.2);
@@ -262,7 +265,7 @@
             }
         }
 
-        // --- DADOS ---
+        // --- DADOS DA LETRA C ---
         const data = {
             ca: [
                 { pt: "CA-SA", en: "House", tr: "(HÁUSS)", emoji: "🏠", s1: "I live in a big house.", t1: "Eu moro em uma casa grande.", st1: "(/ai liv in ê big háuss/)", s2: "My house is blue.", t2: "Minha casa é azul.", st2: "(/mai háuss iz blu/)" },
@@ -347,8 +350,6 @@
         };
 
         // --- LÓGICA DO JOGO ---
-
-        // Função para embaralhar array
         function shuffle(array) {
             const newArray = [...array];
             for (let i = newArray.length - 1; i > 0; i--) {
@@ -358,32 +359,25 @@
             return newArray;
         }
 
-        // Verifica o clique na sílaba
         window.checkSyllable = function(btn, fullWord, correctSyllableText, cardId) {
             const container = document.getElementById(`syllables-${cardId}`);
             const currentIndex = parseInt(container.dataset.currentIndex);
             const correctOrder = fullWord.split("-");
 
-            // Verifica se a sílaba clicada corresponde à esperada na ordem atual
             if (correctSyllableText === correctOrder[currentIndex]) {
-                // ACERTOU
                 playSound('plim');
                 btn.classList.add('syllable-correct');
                 container.dataset.currentIndex = currentIndex + 1;
 
-                // Verifica se completou a palavra
                 if (currentIndex + 1 === correctOrder.length) {
                     setTimeout(() => {
                         playSound('success');
                         const emojiBtn = document.getElementById(`emoji-${cardId}`);
-                        emojiBtn.classList.add('completed'); // Efeito visual na imagem
-                        
-                        // Fala a palavra completa
+                        emojiBtn.classList.add('completed'); 
                         speakSlowPT(fullWord);
                     }, 500);
                 }
             } else {
-                // ERROU
                 playSound('error');
                 btn.classList.add('syllable-wrong');
                 setTimeout(() => {
@@ -404,15 +398,10 @@
                     cardCounter++;
                     const cardId = `card-${cardCounter}`;
                     const syllablesCorrect = item.pt.split("-");
-                    
-                    // Se tiver mais de 1 sílaba, embaralha. Se for 1, mantém (clica e ganha).
                     const syllablesToRender = syllablesCorrect.length > 1 ? shuffle(syllablesCorrect) : syllablesCorrect;
                     
                     let sylButtons = syllablesToRender.map(s => 
-                        `<button 
-                            onclick="checkSyllable(this, '${item.pt}', '${s}', '${cardId}')" 
-                            class="syllable-game-btn"
-                        >${s}</button>`
+                        `<button onclick="checkSyllable(this, '${item.pt}', '${s}', '${cardId}')" class="syllable-game-btn">${s}</button>`
                     ).join("");
                     
                     const card = `
@@ -421,13 +410,8 @@
                                 <div id="emoji-${cardId}" onclick="speakSlowPT('${item.pt}')" class="emoji-container emoji-btn w-24 h-24 bg-gradient-to-br from-indigo-50 to-white rounded-full flex items-center justify-center text-5xl shadow-inner border border-indigo-100" title="Toque para ouvir em Português">
                                     ${item.emoji}
                                 </div>
-                                
                                 <div class="w-full text-center flex-1 flex flex-col">
-                                    <!-- Container das Sílabas com Controle de Estado -->
-                                    <div id="syllables-${cardId}" data-current-index="0" class="flex gap-2 mb-4 justify-center flex-wrap">
-                                        ${sylButtons}
-                                    </div>
-                                    
+                                    <div id="syllables-${cardId}" data-current-index="0" class="flex gap-2 mb-4 justify-center flex-wrap">${sylButtons}</div>
                                     <div class="bg-indigo-50 rounded-xl p-3 mb-4 border border-indigo-100">
                                         <div class="flex items-center justify-center gap-3">
                                             <span class="text-2xl font-bold text-indigo-700 uppercase tracking-wide font-sans">${item.en}</span>
@@ -435,7 +419,6 @@
                                         </div>
                                         <span class="transcription font-mono mt-1 block">${item.tr}</span>
                                     </div>
-
                                     <div class="bg-gray-50 p-4 rounded-xl border-l-4 border-indigo-300 text-left space-y-4 mt-auto shadow-sm">
                                         <div class="relative group">
                                             <div class="flex justify-between items-start gap-2">
@@ -445,7 +428,6 @@
                                             <span class="translation-text">${item.t1}</span>
                                             <span class="simplified-pron mt-1 block">${item.st1}</span>
                                         </div>
-                                        
                                         <div class="relative group border-t border-gray-200 pt-3">
                                             <div class="flex justify-between items-start gap-2">
                                                 <span class="text-[13px] font-bold text-gray-800 leading-tight">${item.s2}</span>
@@ -476,7 +458,7 @@
             }
         }
 
-        // --- SISTEMA DE FALA ---
+        // --- SISTEMA DE FALA OTIMIZADO PARA IPHONE/CHROME ---
         let voices = [];
         function loadVoices() { voices = window.speechSynthesis.getVoices(); }
         if (window.speechSynthesis.onvoiceschanged !== undefined) {
@@ -502,14 +484,21 @@
                 const utterance = new SpeechSynthesisUtterance(text);
                 
                 if (voices.length === 0) loadVoices();
+                
+                // Tenta encontrar vozes de alta qualidade comuns no iPhone e Chrome
                 const targetVoice = 
-                    voices.find(v => v.lang === 'en-US' && v.name.includes('Google')) || 
+                    voices.find(v => v.lang === 'en-US' && v.name.includes('Samantha')) || // iPhone Top 1
+                    voices.find(v => v.lang === 'en-US' && v.name.includes('Ava')) ||      // iPhone Top 2
+                    voices.find(v => v.lang === 'en-US' && v.name.includes('Google US English')) || // Chrome Padrão
                     voices.find(v => v.lang === 'en-US' && (v.name.includes('Premium') || v.name.includes('Enhanced'))) ||
-                    voices.find(v => v.lang === 'en-US') ||
-                    voices.find(v => v.lang.startsWith('en'));
+                    voices.find(v => v.lang === 'en-US'); // Fallback
 
-                if (targetVoice) { utterance.voice = targetVoice; utterance.lang = targetVoice.lang; } 
-                else { utterance.lang = 'en-US'; }
+                if (targetVoice) { 
+                    utterance.voice = targetVoice; 
+                    utterance.lang = targetVoice.lang; // Garante o idioma da voz
+                } else { 
+                    utterance.lang = 'en-US'; 
+                }
                 
                 utterance.rate = 0.85; 
                 window.speechSynthesis.speak(utterance);
@@ -519,13 +508,7 @@
         window.onload = function() {
             renderBlocks();
             setTimeout(loadVoices, 500);
-            
-            // Ativa o contexto de áudio na primeira interação do usuário para navegadores que bloqueiam autoplay
-            document.body.addEventListener('click', function() {
-                if (audioCtx.state === 'suspended') {
-                    audioCtx.resume();
-                }
-            }, { once: true });
+            document.body.addEventListener('click', function() { initAudio(); }, { once: true });
         };
     </script>
 </body>
