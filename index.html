@@ -2,58 +2,102 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sílaba C (Jogo) - Casa Bilíngue Kids</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Sílaba C (Jogo, Desafios & PDF) - Casa Bilíngue Kids</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Poppins:wght@400;500;600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Configurações Globais */
-        body { font-family: 'Poppins', sans-serif; background-color: #f0f7ff; color: #333; scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
-        .kids-font { font-family: 'Fredoka', sans-serif; }
-        
-        /* Cartões */
-        .card-word { 
-            background: white; 
-            border-radius: 24px; 
-            border: 3px solid #e0e7ff; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            transition: all 0.3s ease; 
-            height: 100%; 
-            display: flex; 
-            flex-direction: column; 
+        /* =========================================================
+           CONFIGURAÇÕES GLOBAIS E ESTÉTICA INFANTIL PREMIUM
+           ========================================================= */
+        :root {
+            --bg-main: #f0f7ff;
+            --card-border: #e0e7ff;
+            --primary: #6d28d9;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            overscroll-behavior-y: contain;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(circle at top left, #eef6ff 0%, #f8faff 50%, #fdf4ff 100%);
+            color: #1e293b;
+            -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Trava global de rolagem quando a lousa está ativa em iPhones/iPads/Tablets */
+        body.scroll-locked {
+            overflow: hidden !important;
+            overscroll-behavior: none !important;
+            touch-action: none !important;
+            position: fixed;
+            width: 100%;
+            left: 0;
+            right: 0;
+        }
+
+        .kids-font {
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        /* =========================================================
+           CARTÕES DE PALAVRAS
+           ========================================================= */
+        .card-word {
+            background: white;
+            border-radius: 26px;
+            border: 3px solid #e0e7ff;
+            box-shadow: 0 6px 14px rgba(30, 41, 59, 0.05);
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
             overflow: hidden;
         }
-        .card-word:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); border-color: #a78bfa; }
-        
-        /* Botões de Sílaba (Interativos para o Jogo) */
-        .syllable-game-btn { 
-            background: #f3f0ff; 
-            border: 2px solid #ddd6fe; 
-            color: #6d28d9; 
-            padding: 8px 16px; 
-            border-radius: 12px; 
-            font-weight: 700; 
-            font-size: 1.3rem; 
-            cursor: pointer; 
+        .card-word:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 14px 28px rgba(99, 102, 241, 0.12);
+            border-color: #a78bfa;
+        }
+
+        /* Botões de Sílaba Interativos */
+        .syllable-game-btn {
+            background: #f5f3ff;
+            border: 2px solid #ddd6fe;
+            color: #5b21b6;
+            padding: 8px 15px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 1.25rem;
+            cursor: pointer;
             font-family: 'Fredoka', sans-serif;
             transition: all 0.2s;
             user-select: none;
-            min-width: 50px;
-            -webkit-tap-highlight-color: transparent;
+            min-width: 52px;
+            box-shadow: 0 3px 0 #ddd6fe;
         }
-        .syllable-game-btn:hover { background: #e9d5ff; transform: scale(1.05); }
-        .syllable-game-btn:active { transform: scale(0.95); }
+        .syllable-game-btn:hover {
+            background: #ede9fe;
+            transform: translateY(-2px);
+        }
+        .syllable-game-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 1px 0 #ddd6fe;
+        }
 
-        /* Estados do Jogo */
         .syllable-correct {
             background-color: #22c55e !important;
             border-color: #16a34a !important;
+            box-shadow: 0 3px 0 #15803d !important;
             color: white !important;
-            transform: scale(1.1);
-            box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+            transform: scale(1.06);
             pointer-events: none;
         }
-        
+
         .syllable-wrong {
             animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
             background-color: #fee2e2 !important;
@@ -62,280 +106,981 @@
         }
 
         @keyframes shake {
-            10%, 90% { transform: translate3d(-1px, 0, 0); }
-            20%, 80% { transform: translate3d(2px, 0, 0); }
-            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-            40%, 60% { transform: translate3d(4px, 0, 0); }
+            10%, 90% { transform: translate3d(-2px, 0, 0); }
+            20%, 80% { transform: translate3d(3px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-5px, 0, 0); }
+            40%, 60% { transform: translate3d(5px, 0, 0); }
         }
 
-        /* Botão Imagem */
-        .emoji-container { position: relative; }
-        .emoji-btn { cursor: pointer; transition: transform 0.2s; -webkit-tap-highlight-color: transparent; }
-        .emoji-btn.completed { animation: pulse-green 1s infinite; }
+        @keyframes popIn {
+            0% { transform: scale(0.75); opacity: 0; }
+            70% { transform: scale(1.08); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop {
+            animation: popIn 0.3s ease-out forwards;
+        }
+
+        .emoji-btn {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .emoji-btn:active {
+            transform: scale(0.92);
+        }
+        .emoji-btn.completed {
+            animation: pulse-green 1.2s infinite;
+            border-color: #22c55e !important;
+        }
         @keyframes pulse-green {
-            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.65); }
+            70% { box-shadow: 0 0 0 12px rgba(34, 197, 94, 0); }
             100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
         }
 
         /* Botões de Áudio */
-        .btn-audio { 
-            background: #e0f2fe; color: #0284c7; width: 32px; height: 32px; border-radius: 50%; 
-            display: inline-flex; align-items: center; justify-content: center; cursor: pointer; 
-            border: 1px solid #bae6fd; transition: background 0.2s; flex-shrink: 0;
-            -webkit-tap-highlight-color: transparent;
+        .btn-audio {
+            background: #e0f2fe;
+            color: #0284c7;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 1.5px solid #bae6fd;
+            transition: all 0.2s;
+            flex-shrink: 0;
         }
-        .btn-audio:hover { background: #0ea5e9; color: white; }
-        
-        /* Tipografia */
+        .btn-audio:hover {
+            background: #0ea5e9;
+            color: white;
+            transform: scale(1.08);
+        }
+        .btn-audio.speaking {
+            background: #0284c7;
+            color: white;
+            animation: pulse-blue 0.8s infinite;
+        }
+        @keyframes pulse-blue {
+            0% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.6); }
+            70% { box-shadow: 0 0 0 8px rgba(14, 165, 233, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0); }
+        }
+
         .transcription { color: #ea580c; font-weight: 600; font-size: 0.9rem; }
-        .translation-text { color: #64748b; font-size: 0.85rem; font-weight: 500; display: block; margin-top: 2px; }
+        .translation-text { color: #475569; font-size: 0.85rem; font-weight: 500; display: block; margin-top: 2px; }
         .simplified-pron { color: #7c3aed; font-size: 0.8rem; font-style: italic; opacity: 0.9; }
 
-        /* Navegação */
-        .header-sticky { position: sticky; top: 0; z-index: 50; background: rgba(240, 247, 255, 0.95); backdrop-filter: blur(12px); padding: 10px 0; border-bottom: 1px solid #e0e7ff; }
-        .nav-dot { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: white; font-weight: bold; font-family: 'Fredoka', sans-serif; text-decoration: none; transition: transform 0.2s; }
-        .nav-dot:hover { transform: scale(1.15); }
+        /* Navegação Sticky */
+        .header-sticky {
+            position: sticky;
+            top: 0;
+            z-index: 45;
+            background: rgba(240, 247, 255, 0.95);
+            backdrop-filter: blur(12px);
+            padding: 10px 12px;
+            border-bottom: 2px solid #e0e7ff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        }
+        .nav-dot {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: white;
+            font-weight: 700;
+            font-family: 'Fredoka', sans-serif;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 3px 0 rgba(0,0,0,0.18);
+        }
+        .nav-dot:hover {
+            transform: scale(1.12);
+        }
+
+        /* =========================================================
+           DESAFIOS PROGRESSIVOS (5 NÍVEIS POR SESSÃO)
+           ========================================================= */
+        .challenge-strip {
+            background: white;
+            border: 3px solid #e0e7ff;
+            border-radius: 24px;
+            padding: 18px;
+            margin-top: 28px;
+            box-shadow: 0 6px 18px rgba(99, 102, 241, 0.07);
+        }
+
+        .challenge-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            padding: 12px 10px;
+            border-radius: 18px;
+            border: 2.5px solid transparent;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            text-align: center;
+            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.12);
+        }
+        .challenge-btn:hover {
+            transform: translateY(-2px);
+        }
+        .challenge-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
+        }
+        .challenge-btn.active-challenge {
+            outline: 3px solid #6366f1;
+            outline-offset: 2px;
+        }
+        .challenge-btn.done-badge::after {
+            content: '⭐';
+            position: absolute;
+            top: -8px;
+            right: -6px;
+            font-size: 1.15rem;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
+        }
+
+        .match-card {
+            background: white;
+            border: 2.5px solid #cbd5e1;
+            border-radius: 16px;
+            padding: 12px 14px;
+            cursor: pointer;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 62px;
+            user-select: none;
+        }
+        .match-card:hover {
+            border-color: #818cf8;
+            background: #eef2ff;
+        }
+        .match-card.selected {
+            border-color: #4f46e5;
+            background: #e0e7ff;
+            transform: scale(1.03);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25);
+        }
+        .match-card.matched {
+            border-color: #16a34a;
+            background: #dcfce7;
+            color: #166534;
+            pointer-events: none;
+        }
+        .match-card.wrong {
+            animation: shake 0.4s ease;
+            border-color: #ef4444;
+            background: #fee2e2;
+        }
+
+        /* =========================================================
+           LOUSA INTERATIVA DE ESCRITA E CAÇA-LETRAS
+           ========================================================= */
+        .board-wrapper {
+            background: white;
+            border-radius: 26px;
+            border: 3px dashed #cbd5e1;
+            padding: 16px;
+            margin-top: 24px;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+        .board-wrapper.board-locked {
+            border: 4px solid #6366f1;
+            box-shadow: 0 0 0 6px rgba(99, 102, 241, 0.18), 0 18px 36px rgba(30, 41, 59, 0.14);
+            z-index: 60;
+        }
+
+        .board-stage {
+            position: relative;
+            width: 100%;
+            height: 360px;
+            background-color: #ffffff;
+            border-radius: 18px;
+            border: 2px solid #e2e8f0;
+            overflow: hidden;
+            touch-action: none !important;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+        }
+        @media (min-width: 768px) {
+            .board-stage {
+                height: 410px;
+            }
+        }
+
+        /* Linhas opcionais de caderno de caligrafia */
+        .board-stage.lined-paper {
+            background-image:
+                linear-gradient(to bottom, transparent 47px, #dbeafe 48px, transparent 49px),
+                linear-gradient(to bottom, transparent 23px, #f1f5f9 24px, transparent 25px);
+            background-size: 100% 48px;
+        }
+
+        .board-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            touch-action: none !important;
+            cursor: crosshair;
+            z-index: 2;
+        }
+
+        /* Imagem de respaldo para garantir nitidez máxima dos desenhos ao salvar em PDF */
+        .print-canvas-img {
+            display: none;
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* Guia pontilhada opcional para treino de escrita */
+        .board-trace-guide {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            z-index: 1;
+            font-family: 'Fredoka', sans-serif;
+            font-size: clamp(3rem, 9vw, 5.8rem);
+            font-weight: 700;
+            letter-spacing: 0.16em;
+            color: rgba(148, 163, 184, 0.28);
+            text-transform: uppercase;
+            user-select: none;
+        }
+
+        /* Camada de Letras e Formas Arrastáveis */
+        .board-items-layer {
+            position: absolute;
+            inset: 0;
+            z-index: 3;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        /* Peças Arrastáveis (Letras magnéticas & Formas geométricas) */
+        .draggable-tile {
+            position: absolute;
+            pointer-events: auto;
+            touch-action: none !important;
+            user-select: none;
+            -webkit-user-select: none;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.12s ease, box-shadow 0.12s ease;
+        }
+        .draggable-tile:active,
+        .draggable-tile.dragging {
+            cursor: grabbing;
+            transform: scale(1.14) !important;
+            z-index: 99 !important;
+            filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.22));
+        }
+
+        .letter-magnet {
+            min-width: 50px;
+            height: 54px;
+            padding: 0 12px;
+            border-radius: 14px;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            font-size: 1.65rem;
+            color: white;
+            border: 3px solid rgba(255, 255, 255, 0.85);
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2), 0 6px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .shape-magnet {
+            width: 72px;
+            height: 72px;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.16));
+        }
+
+        .tile-delete-btn {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #ef4444;
+            color: white;
+            font-size: 13px;
+            font-weight: 800;
+            border: 2px solid white;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+        }
+        .draggable-tile.selected-tile .tile-delete-btn {
+            display: flex;
+        }
+        .draggable-tile.selected-tile {
+            outline: 3px dashed #6366f1;
+            outline-offset: 4px;
+            border-radius: 16px;
+        }
+
+        /* =========================================================
+           BOTÕES FLUTUANTES (FERRAMENTAS + SALVAR PDF) E DOCK
+           ========================================================= */
+        .floating-actions-group {
+            position: fixed;
+            bottom: 18px;
+            right: 16px;
+            z-index: 90;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .floating-pdf-fab {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            background: linear-gradient(135deg, #059669, #10b981);
+            color: white;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            font-size: 0.98rem;
+            padding: 13px 18px;
+            border-radius: 999px;
+            border: 3px solid white;
+            box-shadow: 0 10px 24px rgba(5, 150, 105, 0.38);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .floating-pdf-fab:hover {
+            transform: scale(1.06);
+        }
+        .floating-pdf-fab:active {
+            transform: scale(0.95);
+        }
+
+        .floating-fab {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #7c3aed, #ec4899);
+            color: white;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 13px 19px;
+            border-radius: 999px;
+            border: 3px solid white;
+            box-shadow: 0 10px 25px rgba(124, 58, 237, 0.42);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .floating-fab:hover {
+            transform: scale(1.06);
+        }
+        .floating-fab:active {
+            transform: scale(0.95);
+        }
+
+        .floating-dock {
+            position: fixed;
+            bottom: 84px;
+            right: 14px;
+            left: 14px;
+            max-width: 680px;
+            margin: 0 auto;
+            z-index: 88;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(14px);
+            border: 3px solid #c4b5fd;
+            border-radius: 26px;
+            box-shadow: 0 20px 50px rgba(15, 23, 42, 0.24);
+            padding: 14px;
+            transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.22s ease;
+            transform-origin: bottom right;
+        }
+        .floating-dock.dock-hidden {
+            transform: translateY(24px) scale(0.92);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Banner flutuante de Tela Travada (sempre visível no topo quando travado) */
+        .lock-top-banner {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 95;
+            background: #4f46e5;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 999px;
+            border: 2px solid white;
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.45);
+            display: none;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.95rem;
+            white-space: nowrap;
+        }
+        .lock-top-banner.visible {
+            display: flex;
+            animation: popIn 0.25s ease-out;
+        }
+
+        /* Botão de letra no teclado caça-letras */
+        .kbd-letter-btn {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: white;
+            min-width: 38px;
+            height: 40px;
+            padding: 0 8px;
+            border-radius: 11px;
+            border: 2px solid rgba(255,255,255,0.65);
+            box-shadow: 0 3px 0 rgba(0,0,0,0.18);
+            cursor: pointer;
+            transition: transform 0.12s;
+            user-select: none;
+            touch-action: manipulation;
+        }
+        .kbd-letter-btn:active {
+            transform: scale(0.9);
+        }
+
+        .color-swatch {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: transform 0.15s;
+        }
+        .color-swatch.active-swatch {
+            transform: scale(1.22);
+            outline: 3px solid #4f46e5;
+        }
+
+        /* Toast de feedback suave */
+        .toast-pill {
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-16px);
+            z-index: 100;
+            background: #1e293b;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 999px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.95rem;
+            box-shadow: 0 10px 24px rgba(0,0,0,0.22);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.25s ease;
+        }
+        .toast-pill.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
 
         /* Vocab Grid */
-        .vocab-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+        .vocab-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
         @media (min-width: 768px) { .vocab-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (min-width: 1024px) { .vocab-grid { grid-template-columns: repeat(3, 1fr); } }
-        .vocab-item { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; }
-        .vocab-content { flex: 1; display: flex; flex-direction: column; }
-        .vocab-en { font-family: 'Inter', sans-serif; font-weight: 700; color: #1e293b; font-size: 1.1rem; }
-        .vocab-pt { font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: 600; margin-top: 2px; }
-        .vocab-ipa { font-family: 'Courier New', monospace; color: #f59e0b; font-size: 0.85rem; margin-top: 2px; }
-        
-        .btn-nav-main { transition: all 0.3s; box-shadow: 0 4px 0 rgba(0,0,0,0.1); display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-nav-main:hover { transform: translateY(-2px); box-shadow: 0 6px 0 rgba(0,0,0,0.1); }
+        .vocab-item {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: border-color 0.2s;
+        }
+        .vocab-item:hover {
+            border-color: #a5b4fc;
+        }
+
+        .btn-nav-main {
+            transition: all 0.25s;
+            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.14);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-nav-main:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 rgba(0, 0, 0, 0.14);
+        }
+
+        /* Cabeçalho exclusivo para o PDF / Impressão */
+        .print-only-header {
+            display: none;
+        }
+
+        /* =========================================================
+           ESTILOS DE EXPORTAÇÃO PDF / IMPRESSÃO (100% FIEL)
+           Preserva cores, marcações, estrelas, desenhos e letras!
+           ========================================================= */
+        @page {
+            size: A4 portrait;
+            margin: 10mm;
+        }
+
+        @media print {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+
+            body {
+                background: #ffffff !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                position: static !important;
+                overflow: visible !important;
+            }
+
+            /* Esconde elementos puramente de navegação e UI flutuante */
+            .no-print,
+            .floating-actions-group,
+            .floating-dock,
+            .lock-top-banner,
+            .toast-pill,
+            .header-sticky,
+            .btn-audio,
+            .tile-delete-btn {
+                display: none !important;
+            }
+
+            /* Mostra o cabeçalho bonito de caderno do aluninho */
+            .print-only-header {
+                display: flex !important;
+                justify-content: space-between;
+                align-items: center;
+                border: 2px solid #c7d2fe;
+                background: #eef2ff !important;
+                border-radius: 16px;
+                padding: 10px 16px;
+                margin-bottom: 16px;
+                font-size: 12px;
+            }
+
+            /* Evita cortes no meio de cartões, desafios e lousas */
+            .card-word,
+            .board-wrapper,
+            .challenge-strip,
+            .vocab-item {
+                break-inside: avoid !important;
+                page-break-inside: avoid !important;
+                box-shadow: none !important;
+            }
+
+            section {
+                margin-bottom: 24px !important;
+            }
+
+            /* Grade compacta e organizada para A4 */
+            .cards-print-grid {
+                display: grid !important;
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 10px !important;
+            }
+
+            .card-word {
+                border-width: 2px !important;
+                border-radius: 16px !important;
+            }
+            .card-word > div {
+                padding: 10px !important;
+                gap: 8px !important;
+            }
+
+            .emoji-btn {
+                width: 60px !important;
+                height: 60px !important;
+                font-size: 2rem !important;
+                animation: none !important;
+            }
+
+            .syllable-game-btn {
+                padding: 4px 8px !important;
+                font-size: 0.95rem !important;
+                min-width: 34px !important;
+                box-shadow: none !important;
+            }
+
+            /* Garante que o desenho do canvas saia nítido via snapshot <img> */
+            .board-canvas {
+                display: none !important;
+            }
+            .print-canvas-img {
+                display: block !important;
+            }
+
+            .board-wrapper {
+                border: 2px solid #94a3b8 !important;
+                padding: 12px !important;
+                margin-top: 14px !important;
+            }
+            .board-stage {
+                height: 310px !important;
+                border: 1.5px solid #cbd5e1 !important;
+            }
+
+            .draggable-tile.selected-tile {
+                outline: none !important;
+            }
+
+            .vocab-grid {
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 8px !important;
+            }
+        }
     </style>
 </head>
-<body class="p-3 md:p-6 pb-20">
+<body class="p-3 md:p-6 pb-32">
+
+    <!-- Banner fixo de desbloqueio rápido quando a tela estiver travada na lousa -->
+    <div id="lock-top-banner" class="lock-top-banner no-print" role="status" aria-live="polite">
+        <span>🔒 Tela travada na Lousa <strong id="locked-board-name">CA</strong></span>
+        <button onclick="unlockPageScroll()" class="bg-amber-400 hover:bg-amber-300 text-slate-900 font-bold px-3 py-1 rounded-full text-sm shadow transition">
+            🔓 Destravar Página
+        </button>
+    </div>
+
+    <!-- Toast de notificações fofas (substitui qualquer alert) -->
+    <div id="toast-pill" class="toast-pill no-print" role="alert"></div>
 
     <div class="max-w-7xl mx-auto">
         <!-- Navegação Topo -->
-        <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
-            <a href="https://espaco-liberdade.github.io/CasaBilingueKids/" class="btn-nav-main bg-indigo-600 text-white font-bold py-3 px-8 rounded-full text-center w-full sm:w-auto"><span>🏠</span> Voltar ao Menu</a>
-            <a href="https://espaco-liberdade.github.io/silabasbilingue/" class="btn-nav-main bg-orange-500 text-white font-bold py-3 px-8 rounded-full text-center w-full sm:w-auto"><span>🔤</span> Menu Sílabas</a>
+        <div class="flex flex-col sm:flex-row justify-center gap-3 mb-6 no-print">
+            <a href="https://espaco-liberdade.github.io/CasaBilingueKids/" class="btn-nav-main bg-indigo-600 text-white font-bold py-3 px-7 rounded-full text-center w-full sm:w-auto">
+                <span>🏠</span> Voltar ao Menu
+            </a>
+            <a href="https://espaco-liberdade.github.io/silabasbilingue/" class="btn-nav-main bg-orange-500 text-white font-bold py-3 px-7 rounded-full text-center w-full sm:w-auto">
+                <span>🔤</span> Menu Sílabas
+            </a>
+            <button onclick="prepareAndSavePDF()" class="btn-nav-main bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-7 rounded-full text-center w-full sm:w-auto cursor-pointer">
+                <span>📄</span> Salvar Caderno em PDF
+            </button>
         </div>
 
+        <!-- Cabeçalho exclusivo que aparece no topo do PDF impresso/salvo -->
+        <div class="print-only-header">
+            <div>
+                <strong class="kids-font text-purple-700 text-base">CASA BILÍNGUE KIDS — Caderno da Letra C</strong>
+                <div class="text-slate-600">Aluninho(a): <strong id="print-student-name">___________________________________</strong></div>
+            </div>
+            <div class="text-right text-slate-600">
+                <div>Data: <strong id="print-date"></strong></div>
+                <div>Progresso: <strong id="print-stars-summary">0 / 30 Desafios ⭐</strong></div>
+            </div>
+        </div>
+
+        <!-- Cabeçalho Principal -->
         <header class="text-center mb-6">
-            <h1 class="kids-font text-4xl md:text-5xl text-purple-600 mb-2 drop-shadow-sm">CASA BILÍNGUE KIDS</h1>
+            <h1 class="kids-font text-4xl md:text-5xl text-purple-700 mb-1 drop-shadow-sm">CASA BILÍNGUE KIDS</h1>
             <p class="text-orange-500 font-semibold italic text-sm md:text-base">O jeito mais natural de criar um pequeno bilíngue</p>
-            <div class="inline-block bg-yellow-400 px-6 py-2 rounded-full mt-4 shadow-md transform rotate-1">
-                <span class="kids-font text-xl text-white tracking-wide">Módulo: Letra C (Jogo das Sílabas)</span>
+
+            <div class="flex flex-wrap justify-center items-center gap-3 mt-4">
+                <div class="inline-block bg-gradient-to-r from-amber-400 to-orange-400 px-6 py-2 rounded-full shadow-md">
+                    <span class="kids-font text-lg md:text-xl text-white tracking-wide">Módulo: Letra C • Gramática 100% Revisada</span>
+                </div>
+                <div class="inline-flex items-center gap-2 bg-white border-2 border-amber-300 px-4 py-2 rounded-full shadow-sm">
+                    <span class="text-xl">⭐</span>
+                    <span class="kids-font font-bold text-amber-600" id="stars-counter">0 / 30 Desafios</span>
+                </div>
+            </div>
+
+            <!-- Campo de Nome do Aluninho (personaliza o PDF salvo!) -->
+            <div class="mt-4 flex justify-center no-print">
+                <div class="inline-flex flex-wrap items-center justify-center gap-2 bg-white border-2 border-indigo-100 rounded-full px-4 py-2 shadow-sm">
+                    <span class="text-sm font-bold text-indigo-700 kids-font">👧👦 Nome do Aluninho:</span>
+                    <input id="student-name-input" type="text" oninput="saveStudentName(this.value)" placeholder="Digite o nome para sair no PDF..." class="text-sm font-semibold text-slate-700 bg-indigo-50/70 rounded-full px-3.5 py-1 outline-none focus:ring-2 focus:ring-indigo-400 w-56 sm:w-64" />
+                    <button onclick="prepareAndSavePDF()" class="bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold text-xs px-3 py-1.5 rounded-full transition" title="Salva toda a atividade em branco ou preenchida como PDF">
+                        📄 Salvar PDF
+                    </button>
+                </div>
             </div>
         </header>
 
-        <div class="header-sticky mb-8 rounded-xl">
-            <nav class="flex justify-center gap-2 md:gap-4 py-2 flex-wrap px-2">
-                <a href="#sec-ca" class="nav-dot bg-red-400">CA</a>
-                <a href="#sec-ce" class="nav-dot bg-blue-400">CE</a>
-                <a href="#sec-ci" class="nav-dot bg-green-400">CI</a>
-                <a href="#sec-co" class="nav-dot bg-orange-400">CO</a>
-                <a href="#sec-cu" class="nav-dot bg-purple-400">CU</a>
-                <a href="#sec-cao" class="nav-dot bg-yellow-500 text-sm">CÃO</a>
+        <!-- Barra Sticky: Navegação de Sílabas + Controles de Áudio Inglês Aprimorado -->
+        <div class="header-sticky mb-8 rounded-2xl no-print">
+            <nav class="flex justify-center gap-2 md:gap-4 py-1 flex-wrap px-2">
+                <a href="#sec-ca" class="nav-dot bg-red-500" onclick="unlockPageScroll()">CA</a>
+                <a href="#sec-ce" class="nav-dot bg-blue-500" onclick="unlockPageScroll()">CE</a>
+                <a href="#sec-ci" class="nav-dot bg-green-500" onclick="unlockPageScroll()">CI</a>
+                <a href="#sec-co" class="nav-dot bg-orange-500" onclick="unlockPageScroll()">CO</a>
+                <a href="#sec-cu" class="nav-dot bg-purple-500" onclick="unlockPageScroll()">CU</a>
+                <a href="#sec-cao" class="nav-dot bg-amber-500 text-sm" onclick="unlockPageScroll()">CÃO</a>
             </nav>
-            <div class="text-center mt-2">
-                <span class="text-[11px] font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-200">🎮 DESAFIO: Clique nas sílabas embaralhadas na ordem certa!</span>
+
+            <!-- Barra de Controles de Áudio (Voz EN + Velocidade) -->
+            <div class="flex flex-wrap items-center justify-center gap-2 mt-2 pt-2 border-t border-indigo-100 text-xs">
+                <span class="font-bold text-indigo-700 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-200">
+                    🎮 Clique nas sílabas na ordem certa • Desafios, Lousa &amp; PDF!
+                </span>
+                <div class="flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-full border border-sky-200 shadow-sm">
+                    <span class="font-bold text-sky-700">🇺🇸 Voz EN:</span>
+                    <select id="en-voice-select" onchange="onVoiceSelectChange()" class="bg-transparent text-slate-700 font-semibold outline-none max-w-[155px] cursor-pointer" title="Escolha a melhor voz em inglês do seu aparelho">
+                        <option value="">Automática (Melhor)</option>
+                    </select>
+                    <button onclick="testEnglishVoice()" class="bg-sky-100 hover:bg-sky-200 text-sky-800 font-bold px-2 py-0.5 rounded-full transition" title="Testar voz em inglês">
+                        🔊 Testar
+                    </button>
+                </div>
+                <button id="speed-toggle-btn" onclick="toggleSpeechSpeed()" class="bg-white hover:bg-purple-50 text-purple-700 font-bold px-3 py-1 rounded-full border border-purple-200 shadow-sm transition">
+                    🐰 Modo: Normal
+                </button>
             </div>
         </div>
 
-        <div id="content-area">
-            <section id="sec-ca" class="mb-16 scroll-mt-32">
-                <div class="flex items-center gap-3 mb-6 border-b-4 border-red-100 pb-2">
-                    <div class="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center text-white font-bold shadow-md">7</div>
-                    <h2 class="kids-font text-3xl text-red-500">Família do CA</h2>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="grid-ca"></div>
-            </section>
+        <!-- ÁREA PRINCIPAL DAS SESSÕES (CA, CE, CI, CO, CU, CÃO) -->
+        <div id="content-area"></div>
 
-            <section id="sec-ce" class="mb-16 scroll-mt-32">
-                <div class="flex items-center gap-3 mb-6 border-b-4 border-blue-100 pb-2">
-                    <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold shadow-md">8</div>
-                    <h2 class="kids-font text-3xl text-blue-500">Família do CE</h2>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="grid-ce"></div>
-            </section>
-
-            <section id="sec-ci" class="mb-16 scroll-mt-32">
-                <div class="flex items-center gap-3 mb-6 border-b-4 border-green-100 pb-2">
-                    <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-bold shadow-md">9</div>
-                    <h2 class="kids-font text-3xl text-green-500">Família do CI</h2>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="grid-ci"></div>
-            </section>
-
-            <section id="sec-co" class="mb-16 scroll-mt-32">
-                <div class="flex items-center gap-3 mb-6 border-b-4 border-orange-100 pb-2">
-                    <div class="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold shadow-md">10</div>
-                    <h2 class="kids-font text-3xl text-orange-500">Família do CO</h2>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="grid-co"></div>
-            </section>
-
-            <section id="sec-cu" class="mb-16 scroll-mt-32">
-                <div class="flex items-center gap-3 mb-6 border-b-4 border-purple-100 pb-2">
-                    <div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold shadow-md">11</div>
-                    <h2 class="kids-font text-3xl text-purple-500">Família do CU</h2>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="grid-cu"></div>
-            </section>
-
-            <section id="sec-cao" class="mb-16 scroll-mt-32">
-                <div class="flex items-center gap-3 mb-6 border-b-4 border-yellow-100 pb-2">
-                    <div class="w-10 h-10 bg-yellow-600 rounded-full flex items-center justify-center text-white font-bold shadow-md">12</div>
-                    <h2 class="kids-font text-3xl text-yellow-600">O Som do CÃO</h2>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="grid-cao"></div>
-            </section>
-        </div>
-
-        <section class="mt-20 bg-white p-6 rounded-3xl border-4 border-gray-100 shadow-xl">
+        <!-- RESUMO DO VOCABULÁRIO -->
+        <section class="mt-20 bg-white p-6 rounded-3xl border-4 border-indigo-50 shadow-xl">
             <div class="text-center mb-8">
-                <h2 class="kids-font text-3xl text-gray-700">📚 Resumo do Vocabulário</h2>
-                <p class="text-gray-400 text-sm">Toque no alto-falante para praticar a pronúncia</p>
+                <h2 class="kids-font text-3xl text-slate-700">📚 Resumo do Vocabulário — Letra C</h2>
+                <p class="text-slate-400 text-sm">Toque no alto-falante para praticar a pronúncia clara em Português e Inglês</p>
             </div>
             <div id="vocab-container" class="vocab-grid"></div>
         </section>
 
-        <div class="flex flex-col sm:flex-row justify-center gap-4 mt-12 mb-8">
-            <a href="https://espaco-liberdade.github.io/CasaBilingueKids/" class="btn-nav-main bg-indigo-600 text-white font-bold py-4 px-8 rounded-2xl text-center w-full sm:w-auto text-lg"><span>🏠</span> Voltar ao Menu Principal</a>
+        <div class="flex flex-col sm:flex-row justify-center gap-4 mt-12 mb-8 no-print">
+            <a href="https://espaco-liberdade.github.io/CasaBilingueKids/" class="btn-nav-main bg-indigo-600 text-white font-bold py-4 px-8 rounded-2xl text-center w-full sm:w-auto text-lg">
+                <span>🏠</span> Voltar ao Menu Principal
+            </a>
+            <button onclick="prepareAndSavePDF()" class="btn-nav-main bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-8 rounded-2xl text-center w-full sm:w-auto text-lg cursor-pointer">
+                <span>📄</span> Salvar Tudo em PDF
+            </button>
         </div>
-        
-        <footer class="text-center text-gray-400 text-xs pb-4">
-            <p>&copy; 2024 Casa Bilíngue Kids - Desenvolvido por Fábio de Almeida</p>
+
+        <footer class="text-center text-slate-400 text-xs pb-6">
+            <p>&copy; Casa Bilíngue Kids — Alfabetização Bilíngue com Separação Silábica Oficial (Português do Brasil)</p>
         </footer>
     </div>
 
+    <!-- =========================================================
+         BOTÕES FLUTUANTES SEMPRE ACESSÍVEIS (SALVAR PDF + FERRAMENTAS)
+         ========================================================= -->
+    <div class="floating-actions-group no-print">
+        <button id="fab-pdf" onclick="prepareAndSavePDF()" class="floating-pdf-fab" aria-label="Salvar todo o conteúdo como PDF" title="Salvar em branco ou preenchido como PDF">
+            <span class="text-xl">📄</span>
+            <span class="hidden sm:inline">Salvar PDF</span>
+        </button>
+        <button id="fab-tools" onclick="toggleToolDock()" class="floating-fab" aria-label="Abrir ferramentas da lousa">
+            <span class="text-2xl">🎨</span>
+            <span id="fab-label">Ferramentas</span>
+        </button>
+    </div>
+
+    <!-- BARRA DE FERRAMENTAS CRIATIVA (LOUSA) -->
+    <div id="floating-dock" class="floating-dock dock-hidden no-print" role="dialog" aria-label="Barra de ferramentas criativa">
+        <!-- Cabeçalho da barra -->
+        <div class="flex items-center justify-between gap-2 pb-2 mb-2 border-b border-purple-100">
+            <div class="flex items-center gap-2">
+                <span class="kids-font font-bold text-purple-700 text-base">🧰 Caixa Mágica</span>
+                <span id="dock-active-board-pill" class="text-xs font-bold bg-indigo-100 text-indigo-700 px-2.5 py-0.5 rounded-full">
+                    Lousa: CA
+                </span>
+            </div>
+            <div class="flex items-center gap-1.5">
+                <button onclick="prepareAndSavePDF()" class="text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-full shadow-sm" title="Salvar todo o caderno como PDF">
+                    📄 PDF
+                </button>
+                <button id="dock-lock-btn" onclick="toggleActiveBoardLock()" class="text-xs font-bold bg-indigo-600 text-white px-3 py-1 rounded-full shadow-sm">
+                    🔒 Travar Tela
+                </button>
+                <button onclick="toggleToolDock(false)" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold flex items-center justify-center">
+                    ✕
+                </button>
+            </div>
+        </div>
+
+        <!-- Abas da barra de ferramentas -->
+        <div class="grid grid-cols-3 gap-2 mb-3">
+            <button onclick="switchDockTab('draw')" id="tab-btn-draw" class="kids-font py-2 px-2 rounded-xl text-sm font-bold bg-purple-600 text-white shadow-sm transition">
+                ✏️ Caneta &amp; Cores
+            </button>
+            <button onclick="switchDockTab('shapes')" id="tab-btn-shapes" class="kids-font py-2 px-2 rounded-xl text-sm font-bold bg-purple-50 text-purple-700 hover:bg-purple-100 transition">
+                🔷 Formas
+            </button>
+            <button onclick="switchDockTab('letters')" id="tab-btn-letters" class="kids-font py-2 px-2 rounded-xl text-sm font-bold bg-purple-50 text-purple-700 hover:bg-purple-100 transition">
+                🔤 Caça-Letras
+            </button>
+        </div>
+
+        <!-- ABA 1: CANETA, CORES, BORRACHA -->
+        <div id="dock-tab-draw" class="space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="flex flex-wrap gap-1.5">
+                    <button onclick="setTool('pen')" id="tool-pen" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-600 text-white shadow-sm">✏️ Caneta</button>
+                    <button onclick="setTool('marker')" id="tool-marker" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700">🖍️ Pincel</button>
+                    <button onclick="setTool('eraser')" id="tool-eraser" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700">🧽 Borracha</button>
+                    <button onclick="setTool('move')" id="tool-move" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700">🖐️ Mover Peças</button>
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <button onclick="undoBoard()" class="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-amber-100 text-amber-800 hover:bg-amber-200">↩️ Desfazer</button>
+                    <button onclick="clearActiveBoard()" class="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-red-100 text-red-700 hover:bg-red-200">🗑️ Limpar</button>
+                </div>
+            </div>
+
+            <!-- Espessura do traço -->
+            <div class="flex items-center gap-2 bg-slate-50 px-3 py-2 rounded-xl">
+                <span class="text-xs font-bold text-slate-500">Traço:</span>
+                <button onclick="setBrushSize(4)" id="size-4" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-white border border-slate-200">Fino</button>
+                <button onclick="setBrushSize(8)" id="size-8" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-600 text-white border border-indigo-600">Médio</button>
+                <button onclick="setBrushSize(16)" id="size-16" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-white border border-slate-200">Grosso</button>
+                <button onclick="toggleLinedPaper()" class="ml-auto px-2.5 py-1 rounded-lg text-xs font-bold bg-sky-100 text-sky-800 hover:bg-sky-200">📏 Linhas</button>
+            </div>
+
+            <!-- Paleta de Cores -->
+            <div class="flex items-center justify-center gap-2.5 flex-wrap py-1" id="color-palette"></div>
+        </div>
+
+        <!-- ABA 2: FORMAS GEOMÉTRICAS ARRASTÁVEIS -->
+        <div id="dock-tab-shapes" class="hidden space-y-2">
+            <p class="text-xs text-center text-slate-500 font-medium">
+                Toque em uma forma para colocá-la na lousa (na cor escolhida) e arraste onde quiser!
+            </p>
+            <div class="grid grid-cols-3 sm:grid-cols-6 gap-2" id="shapes-palette"></div>
+            <div class="flex items-center justify-center gap-2 pt-1 flex-wrap" id="shapes-color-palette"></div>
+        </div>
+
+        <!-- ABA 3: TECLADO CAÇA-LETRAS COLORIDO -->
+        <div id="dock-tab-letters" class="hidden space-y-2 max-h-[250px] overflow-y-auto pr-1" style="touch-action: pan-y;">
+            <p class="text-xs text-center text-slate-500 font-medium">
+                Toque nas sílabas ou letras coloridas para montar palavras na lousa! Depois arraste com o dedo.
+            </p>
+            <!-- Sílabas rápidas da família C -->
+            <div>
+                <div class="text-[11px] font-bold uppercase text-indigo-500 mb-1">Sílabas da Família C:</div>
+                <div class="flex flex-wrap gap-1.5" id="kbd-syllables"></div>
+            </div>
+            <!-- Alfabeto colorido completo -->
+            <div>
+                <div class="text-[11px] font-bold uppercase text-purple-500 mb-1">Alfabeto &amp; Acentos (Caça-Letras):</div>
+                <div class="flex flex-wrap gap-1.5" id="kbd-alphabet"></div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // --- CONFIGURAÇÃO DE ÁUDIO PARA IOS/MOBILE ---
-        let audioCtx = null;
+        /* =====================================================================
+           1. DADOS REVISADOS GRAMATICALMENTE — LETRA C (SEPARAÇÃO SILÁBICA OFICIAL)
+           Apenas palavras cuja sílaba pertence rigorosamente à sessão (CA, CE,
+           CI, CO, CU, CÃO) e cuja separação silábica está 100% correta no PT-BR.
+           Removidos erros/sílabas complexas: CAR-RO, CAI-XA, CAS-TE-LO, CES-TA,
+           CEN-TO-PEI-A, CÉU, CIR-CO, CIN-TO, CIN-CO, CIS-NE, CIN-ZA, COM-PU-TA-DOR,
+           CUP-CA-KE, CUI-A, CUS-CUZ, CUR-VA, CUI-DA-DO. Corrigido CÍ-LIOS.
+           ===================================================================== */
+        const sectionsMeta = [
+            { id: 'ca',  label: 'CA',  title: 'Família do CA',  num: 7,  color: 'red',    hex: '#ef4444', lightBg: '#fef2f2', border: '#fecaca' },
+            { id: 'ce',  label: 'CE',  title: 'Família do CE',  num: 8,  color: 'blue',   hex: '#3b82f6', lightBg: '#eff6ff', border: '#bfdbfe' },
+            { id: 'ci',  label: 'CI',  title: 'Família do CI',  num: 9,  color: 'green',  hex: '#22c55e', lightBg: '#f0fdf4', border: '#bbf7d0' },
+            { id: 'co',  label: 'CO',  title: 'Família do CO',  num: 10, color: 'orange', hex: '#f97316', lightBg: '#fff7ed', border: '#fed7aa' },
+            { id: 'cu',  label: 'CU',  title: 'Família do CU',  num: 11, color: 'purple', hex: '#a855f7', lightBg: '#faf5ff', border: '#e9d5ff' },
+            { id: 'cao', label: 'CÃO', title: 'O Som do CÃO',   num: 12, color: 'amber',  hex: '#d97706', lightBg: '#fffbeb', border: '#fde68a' }
+        ];
 
-        function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-        }
-
-        function playSound(type) {
-            initAudio(); // Tenta destravar áudio no toque
-            if (!audioCtx) return;
-
-            const oscillator = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            oscillator.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-
-            const now = audioCtx.currentTime;
-
-            if (type === 'plim') {
-                oscillator.type = 'sine';
-                oscillator.frequency.setValueAtTime(880, now);
-                oscillator.frequency.exponentialRampToValueAtTime(1760, now + 0.1);
-                gainNode.gain.setValueAtTime(0.3, now);
-                gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
-                oscillator.start(now);
-                oscillator.stop(now + 0.5);
-            } else if (type === 'error') {
-                oscillator.type = 'sawtooth';
-                oscillator.frequency.setValueAtTime(150, now);
-                oscillator.frequency.linearRampToValueAtTime(100, now + 0.2);
-                gainNode.gain.setValueAtTime(0.3, now);
-                gainNode.gain.linearRampToValueAtTime(0.001, now + 0.3);
-                oscillator.start(now);
-                oscillator.stop(now + 0.3);
-            } else if (type === 'success') {
-                [523.25, 659.25, 783.99].forEach((freq, i) => {
-                    const osc = audioCtx.createOscillator();
-                    const gn = audioCtx.createGain();
-                    osc.connect(gn);
-                    gn.connect(audioCtx.destination);
-                    osc.type = 'triangle';
-                    osc.frequency.value = freq;
-                    gn.gain.setValueAtTime(0.2, now + (i * 0.1));
-                    gn.gain.linearRampToValueAtTime(0.001, now + 0.8 + (i * 0.1));
-                    osc.start(now + (i * 0.1));
-                    osc.stop(now + 1.2);
-                });
-            }
-        }
-
-        // --- DADOS DA LETRA C ---
         const data = {
             ca: [
                 { pt: "CA-SA", en: "House", tr: "(HÁUSS)", emoji: "🏠", s1: "I live in a big house.", t1: "Eu moro em uma casa grande.", st1: "(/ai liv in ê big háuss/)", s2: "My house is blue.", t2: "Minha casa é azul.", st2: "(/mai háuss iz blu/)" },
                 { pt: "CA-VA-LO", en: "Horse", tr: "(HÓRSS)", emoji: "🐎", s1: "The horse is brown.", t1: "O cavalo é marrom.", st1: "(/dâ hórss iz bráun/)", s2: "I like to ride a horse.", t2: "Eu gosto de andar a cavalo.", st2: "(/ai láik tu ráid ê hórss/)" },
-                { pt: "CA-CHOR-RO", en: "Dog", tr: "(DÓG)", emoji: "🐶", s1: "My dog is happy.", t1: "Meu cachorro é feliz.", st1: "(/mai dóg iz hép-pi/)", s2: "The dog barks a lot.", t2: "O cachorro late muito.", st2: "(/dâ dóg bárks ê lót/)" },
+                { pt: "CA-CHOR-RO", en: "Dog", tr: "(DÓG)", emoji: "🐶", s1: "My dog is happy.", t1: "Meu cachorro é feliz.", st1: "(/mai dóg iz hé-pi/)", s2: "The dog barks a lot.", t2: "O cachorro late muito.", st2: "(/dâ dóg bárks ê lót/)" },
                 { pt: "CA-MA", en: "Bed", tr: "(BÉD)", emoji: "🛏️", s1: "I sleep in my bed.", t1: "Eu durmo na minha cama.", st1: "(/ai slíp in mai béd/)", s2: "The bed is soft.", t2: "A cama é macia.", st2: "(/dâ béd iz sóft/)" },
-                { pt: "CAR-RO", en: "Car", tr: "(KÁR)", emoji: "🚗", s1: "Dad drives a red car.", t1: "Papai dirige um carro vermelho.", st1: "(/déd dráivs ê réd kár/)", s2: "The car is clean.", t2: "O carro está limpo.", st2: "(/dâ kár iz klin/)" },
                 { pt: "CA-MI-SA", en: "Shirt", tr: "(SHÛRT)", emoji: "👕", s1: "I wear a blue shirt.", t1: "Eu uso uma camisa azul.", st1: "(/ai uêr ê blu shûrt/)", s2: "Mom washed my shirt.", t2: "Mamãe lavou minha camisa.", st2: "(/môm uóshd mai shûrt/)" },
-                { pt: "CAI-XA", en: "Box", tr: "(BÓKS)", emoji: "📦", s1: "Open the toy box.", t1: "Abra a caixa de brinquedos.", st1: "(/ôu-pên dâ tói bóks/)", s2: "The box is big.", t2: "A caixa é grande.", st2: "(/dâ bóks iz big/)" },
                 { pt: "CA-FÉ", en: "Coffee", tr: "(KÓ-FI)", emoji: "☕", s1: "Grandpa drinks coffee.", t1: "O vovô bebe café.", st1: "(/grénd-pá drínks kó-fi/)", s2: "The coffee is hot.", t2: "O café está quente.", st2: "(/dâ kó-fi iz hót/)" },
                 { pt: "CA-DEI-RA", en: "Chair", tr: "(TCHÉR)", emoji: "🪑", s1: "Sit on the chair.", t1: "Sente-se na cadeira.", st1: "(/sít on dâ tchér/)", s2: "The wooden chair.", t2: "A cadeira de madeira.", st2: "(/dâ uú-dên tchér/)" },
-                { pt: "CAS-TE-LO", en: "Castle", tr: "(KÉ-SOL)", emoji: "🏰", s1: "The castle is big.", t1: "O castelo é grande.", st1: "(/dâ ké-sol iz bíg/)", s2: "A beautiful castle.", t2: "Um belo castelo.", st2: "(/ê biú-ti-ful ké-sol/)" },
                 { pt: "CA-DER-NO", en: "Notebook", tr: "(NÔUT-BUK)", emoji: "📓", s1: "I write in my notebook.", t1: "Eu escrevo no meu caderno.", st1: "(/ai ráit in mai nôut-buk/)", s2: "My new notebook.", t2: "Meu caderno novo.", st2: "(/mai niú nôut-buk/)" },
-                { pt: "CA-BE-LO", en: "Hair", tr: "(HÉR)", emoji: "💇‍♂️", s1: "She has long hair.", t1: "Ela tem cabelo comprido.", st1: "(/shi hés lóng hér/)", s2: "Comb your hair.", t2: "Penteie seu cabelo.", st2: "(/kóu-m iór hér/)" }
+                { pt: "CA-BE-LO", en: "Hair", tr: "(HÉR)", emoji: "💇‍♂️", s1: "She has long hair.", t1: "Ela tem cabelo comprido.", st1: "(/shi hés lóng hér/)", s2: "Comb your hair.", t2: "Penteie seu cabelo.", st2: "(/kôum iór hér/)" }
             ],
             ce: [
                 { pt: "CE-BO-LA", en: "Onion", tr: "(ÂN-IÔN)", emoji: "🧅", s1: "The onion is round.", t1: "A cebola é redonda.", st1: "(/dâ ân-iôn iz ráund/)", s2: "I like onions.", t2: "Eu gosto de cebolas.", st2: "(/ai láik ân-iôns/)" },
                 { pt: "CE-NOU-RA", en: "Carrot", tr: "(KÉ-RÓT)", emoji: "🥕", s1: "Rabbits eat carrots.", t1: "Coelhos comem cenouras.", st1: "(/ré-bits it ké-rôts/)", s2: "The carrot is orange.", t2: "A cenoura é laranja.", st2: "(/dâ ké-rôt iz ó-rindj/)" },
-                { pt: "CE-LU-LAR", en: "Cell phone", tr: "(SÉL FÔUN)", emoji: "📱", s1: "Dad lost his cell phone.", t1: "Papai perdeu o celular dele.", st1: "(/déd lóst hiz sél fôun/)", s2: "The phone is ringing.", t2: "O telefone está tocando.", st2: "(/dâ fôun iz rín-guin/)" },
+                { pt: "CE-LU-LAR", en: "Cell phone", tr: "(SÉL FÔUN)", emoji: "📱", s1: "Dad lost his cell phone.", t1: "Papai perdeu o celular dele.", st1: "(/déd lóst hiz sél fôun/)", s2: "The phone is ringing.", t2: "O celular está tocando.", st2: "(/dâ fôun iz rín-guin/)" },
                 { pt: "CE-RE-JA", en: "Cherry", tr: "(TCHÉ-RI)", emoji: "🍒", s1: "The cherry is red.", t1: "A cereja é vermelha.", st1: "(/dâ tché-ri iz réd/)", s2: "Sweet cherry.", t2: "Cereja doce.", st2: "(/suít tché-ri/)" },
-                { pt: "CES-TA", en: "Basket", tr: "(BÉS-KIT)", emoji: "🧺", s1: "A basket of flowers.", t1: "Uma cesta de flores.", st1: "(/ê bés-kit ôv fláu-êrs/)", s2: "Put it in the basket.", t2: "Coloque na cesta.", st2: "(/put it in dâ bés-kit/)" },
-                { pt: "CE-GO", en: "Blind", tr: "(BLÁIND)", emoji: "🦯", s1: "The blind man is kind.", t1: "O homem cego é gentil.", st1: "(/dâ bláind mén iz káind/)", s2: "Guide dog for the blind.", t2: "Cão guia para o cego.", st2: "(/gáid dóg fôr dâ bláind/)" },
-                { pt: "CE-GO-NHA", en: "Stork", tr: "(STÓRK)", emoji: "🦢", s1: "The stork is white.", t1: "A cegonha é branca.", st1: "(/dâ stórk iz uáit/)", s2: "A baby with the stork.", t2: "Um bebé com a cegonha.", st2: "(/ê bêi-bi uíd dâ stórk/)" },
-                { pt: "CEN-TO-PEI-A", en: "Centipede", tr: "(SÉN-TI-PÍD)", emoji: "🐛", s1: "The centipede is slow.", t1: "A centopeia é lenta.", st1: "(/dâ sén-ti-píd iz slóu/)", s2: "Many legs.", t2: "Muitas pernas.", st2: "(/mé-ni légs/)" },
+                { pt: "CE-GO", en: "Blind", tr: "(BLÁIND)", emoji: "🦯", s1: "The blind man is kind.", t1: "O homem cego é gentil.", st1: "(/dâ bláind mén iz káind/)", s2: "Guide dog for the blind.", t2: "Cão-guia para o cego.", st2: "(/gáid dóg fôr dâ bláind/)" },
+                { pt: "CE-GO-NHA", en: "Stork", tr: "(STÓRK)", emoji: "🦢", s1: "The stork is white.", t1: "A cegonha é branca.", st1: "(/dâ stórk iz uáit/)", s2: "A baby with the stork.", t2: "Um bebê com a cegonha.", st2: "(/ê bêi-bi uíd dâ stórk/)" },
                 { pt: "CÉ-RE-BRO", en: "Brain", tr: "(BRÊIN)", emoji: "🧠", s1: "Use your brain.", t1: "Use seu cérebro.", st1: "(/iuz iór brêin/)", s2: "The brain is smart.", t2: "O cérebro é esperto.", st2: "(/dâ brêin iz smárt/)" },
                 { pt: "CÉ-DU-LA", en: "Banknote", tr: "(BÉNK-NÔUT)", emoji: "💵", s1: "Green banknote.", t1: "Cédula verde.", st1: "(/grín bénk-nôut/)", s2: "Paper banknote.", t2: "Cédula de papel.", st2: "(/pêi-pêr bénk-nôut/)" },
-                { pt: "CE-RA", en: "Wax", tr: "(UÁKS)", emoji: "🕯️", s1: "Made of wax.", t1: "Feito de cera.", st1: "(/mêid ôv uáks/)", s2: "Ear wax.", t2: "Cera de ouvido.", st2: "(/ír uáks/)" },
-                { pt: "CÉU", en: "Sky", tr: "(SKÁI)", emoji: "🌤️", s1: "Look at the sky.", t1: "Olhe para o céu.", st1: "(/luk ét dâ skái/)", s2: "The sky is blue.", t2: "O céu é azul.", st2: "(/dâ skái iz blu/)" }
+                { pt: "CE-RA", en: "Wax", tr: "(UÁKS)", emoji: "🕯️", s1: "The candle is made of wax.", t1: "A vela é feita de cera.", st1: "(/dâ kén-dol iz mêid ôv uáks/)", s2: "Yellow bee wax.", t2: "Cera de abelha amarela.", st2: "(/ié-lou bí uáks/)" }
             ],
             ci: [
                 { pt: "CI-DA-DE", en: "City", tr: "(SÍ-TI)", emoji: "🏙️", s1: "The city is busy.", t1: "A cidade é movimentada.", st1: "(/dâ sí-ti iz bí-zi/)", s2: "I love the city.", t2: "Eu amo a cidade.", st2: "(/ai lâv dâ sí-ti/)" },
-                { pt: "CIR-CO", en: "Circus", tr: "(SÊR-KÂSS)", emoji: "🎪", s1: "Let's go to the circus.", t1: "Vamos ao circo.", st1: "(/léts gou tu dâ sêr-kâss/)", s2: "The circus has clowns.", t2: "O circo tem palhaços.", st2: "(/dâ sêr-kâss héz kláuns/)" },
-                { pt: "CIN-TO", en: "Belt", tr: "(BÉLT)", emoji: "🥋", s1: "Fasten your belt.", t1: "Aperte seu cinto.", st1: "(/fés-sên iór bélt/)", s2: "A black belt.", t2: "Um cinto preto.", st2: "(/ê blék bélt/)" },
-                { pt: "CIN-CO", en: "Five", tr: "(FÁIV)", emoji: "5️⃣", s1: "Five fingers.", t1: "Cinco dedos.", st1: "(/fáiv fíng-guêrs/)", s2: "I am five.", t2: "Eu tenho cinco anos.", st2: "(/ai ém fáiv/)" },
                 { pt: "CI-NE-MA", en: "Cinema", tr: "(SÍ-NÊ-MÂ)", emoji: "🎬", s1: "We are at the cinema.", t1: "Nós estamos no cinema.", st1: "(/ui ar ét dâ sí-nê-mâ/)", s2: "I like the cinema.", t2: "Eu gosto do cinema.", st2: "(/ai láik dâ sí-nê-mâ/)" },
                 { pt: "CI-GAR-RA", en: "Cicada", tr: "(SI-KÊI-DÂ)", emoji: "🦗", s1: "The cicada is noisy.", t1: "A cigarra é barulhenta.", st1: "(/dâ si-kêi-dâ iz nói-zi/)", s2: "Hear the cicada.", t2: "Ouça a cigarra.", st2: "(/hír dâ si-kêi-dâ/)" },
-                { pt: "CIS-NE", en: "Swan", tr: "(SUÓN)", emoji: "🦢", s1: "White swan.", t1: "Cisne branco.", st1: "(/uáit suón/)", s2: "Swan in the lake.", t2: "Cisne no lago.", st2: "(/suón in dâ lêik/)" },
                 { pt: "CI-EN-TIS-TA", en: "Scientist", tr: "(SÁI-ÊN-TIST)", emoji: "🔬", s1: "The scientist is smart.", t1: "O cientista é esperto.", st1: "(/dâ sái-ên-tist iz smárt/)", s2: "I want to be a scientist.", t2: "Eu quero ser um cientista.", st2: "(/ai uónt tu bi ê sái-ên-tist/)" },
-                { pt: "CÍ-LI-OS", en: "Eyelashes", tr: "(ÁI-LÉ-SHIZ)", emoji: "👁️", s1: "Long eyelashes.", t1: "Cílios longos.", st1: "(/lóng ái-lé-shiz/)", s2: "My eyelashes.", t2: "Meus cílios.", st2: "(/mai ái-lé-shiz/)" },
+                { pt: "CÍ-LIOS", en: "Eyelashes", tr: "(ÁI-LÉ-SHIZ)", emoji: "👁️", s1: "Long eyelashes.", t1: "Cílios longos.", st1: "(/lóng ái-lé-shiz/)", s2: "Blink your eyelashes.", t2: "Pisque os seus cílios.", st2: "(/blínk iór ái-lé-shiz/)" },
                 { pt: "CI-CLO-NE", en: "Cyclone", tr: "(SÁI-KLÔUN)", emoji: "🌪️", s1: "A powerful cyclone.", t1: "Um ciclone poderoso.", st1: "(/ê páu-êr-ful sái-klôun/)", s2: "Cyclone wind.", t2: "Vento de ciclone.", st2: "(/sái-klôun uínd/)" },
-                { pt: "CIN-ZA", en: "Gray", tr: "(GRÊI)", emoji: "🐘", s1: "Gray cat.", t1: "Gato cinza.", st1: "(/grêi két/)", s2: "Gray rainy day.", t2: "Dia chuvoso cinza.", st2: "(/grêi rêi-ni dêi/)" },
-                { pt: "CI-MEN-TO", en: "Cement", tr: "(SI-MÉNT)", emoji: "🧱", s1: "Hard cement.", t1: "Cimento duro.", st1: "(/hárd si-mént/)", s2: "Wet cement.", t2: "Cimento molhado.", st2: "(/uét si-mént/)" }
+                { pt: "CI-MEN-TO", en: "Cement", tr: "(SI-MÉNT)", emoji: "🧱", s1: "Hard cement.", t1: "Cimento duro.", st1: "(/hárd si-mént/)", s2: "Wet cement.", t2: "Cimento molhado.", st2: "(/uét si-mént/)" },
+                { pt: "CI-PÓ", en: "Vine", tr: "(VÁIN)", emoji: "🌿", s1: "The monkey swings on a vine.", t1: "O macaco balança no cipó.", st1: "(/dâ mân-ki suíngs on ê váin/)", s2: "A long green vine.", t2: "Um cipó verde comprido.", st2: "(/ê lóng grín váin/)" },
+                { pt: "CI-CLIS-TA", en: "Cyclist", tr: "(SÁI-KLIST)", emoji: "🚴", s1: "The cyclist wears a helmet.", t1: "O ciclista usa capacete.", st1: "(/dâ sái-klist uêrs ê hél-mêt/)", s2: "A fast cyclist.", t2: "Um ciclista rápido.", st2: "(/ê fést sái-klist/)" }
             ],
             co: [
                 { pt: "CO-PO", en: "Cup", tr: "(KÂP)", emoji: "🥤", s1: "Drink from the cup.", t1: "Beba no copo.", st1: "(/drínk frôm dâ kâp/)", s2: "A blue cup.", t2: "Um copo azul.", st2: "(/ê blu kâp/)" },
                 { pt: "CO-CO", en: "Coconut", tr: "(KÔU-KÔ-NÂT)", emoji: "🥥", s1: "Sweet coconut.", t1: "Coco doce.", st1: "(/suít kôu-kô-nât/)", s2: "I like coconut water.", t2: "Eu gosto de água de coco.", st2: "(/ai láik kôu-kô-nât uó-têr/)" },
                 { pt: "CO-LA", en: "Glue", tr: "(GLÚ)", emoji: "🧴", s1: "Use the glue.", t1: "Use a cola.", st1: "(/iuz dâ glú/)", s2: "Sticky glue.", t2: "Cola grudenta.", st2: "(/stí-ki glú/)" },
                 { pt: "CO-E-LHO", en: "Rabbit", tr: "(RÉ-BIT)", emoji: "🐇", s1: "The rabbit hops.", t1: "O coelho pula.", st1: "(/dâ ré-bit hóps/)", s2: "A white rabbit.", t2: "Um coelho branco.", st2: "(/ê uáit ré-bit/)" },
-                { pt: "CO-BRA", en: "Snake", tr: "(SNÊIK)", emoji: "🐍", s1: "Long snake.", t1: "Cobra longa.", st1: "(/lóng snêik/)", s2: "Be careful.", t2: "Tenha cuidado.", st2: "(/bi ké-r-ful/)" },
+                { pt: "CO-BRA", en: "Snake", tr: "(SNÊIK)", emoji: "🐍", s1: "Long snake.", t1: "Cobra longa.", st1: "(/lóng snêik/)", s2: "The green snake.", t2: "A cobra verde.", st2: "(/dâ grín snêik/)" },
                 { pt: "CO-LHER", en: "Spoon", tr: "(SPÚN)", emoji: "🥄", s1: "Use a silver spoon.", t1: "Use uma colher de prata.", st1: "(/iuz ê síl-vêr spún/)", s2: "Spoon for the soup.", t2: "Colher para a sopa.", st2: "(/spún fôr dâ súp/)" },
                 { pt: "CO-MI-DA", en: "Food", tr: "(FÚD)", emoji: "🥘", s1: "Good food.", t1: "Comida boa.", st1: "(/gúd fúd/)", s2: "Healthy food.", t2: "Comida saudável.", st2: "(/hél-thi fúd/)" },
-                { pt: "CO-RA-ÇÃO", en: "Heart", tr: "(HÁRT)", emoji: "❤️", s1: "Happy heart.", t1: "Coração feliz.", st1: "(/hép-pi hárt/)", s2: "Red heart.", t2: "Coração vermelho.", st2: "(/réd hárt/)" },
+                { pt: "CO-RA-ÇÃO", en: "Heart", tr: "(HÁRT)", emoji: "❤️", s1: "Happy heart.", t1: "Coração feliz.", st1: "(/hé-pi hárt/)", s2: "Red heart.", t2: "Coração vermelho.", st2: "(/réd hárt/)" },
                 { pt: "CO-RU-JA", en: "Owl", tr: "(ÁU-OL)", emoji: "🦉", s1: "The owl is awake.", t1: "A coruja está acordada.", st1: "(/dâ áu-ol iz ê-uêik/)", s2: "Brown owl.", t2: "Coruja marrom.", st2: "(/bráun áu-ol/)" },
                 { pt: "CO-ZI-NHA", en: "Kitchen", tr: "(KÍ-TCHÊN)", emoji: "🍳", s1: "In the kitchen.", t1: "Na cozinha.", st1: "(/in dâ kí-tchên/)", s2: "Clean kitchen.", t2: "Cozinha limpa.", st2: "(/klín kí-tchên/)" },
-                { pt: "CO-TO-VE-LO", en: "Elbow", tr: "(ÉL-BÔU)", emoji: "💪", s1: "Touch your elbow.", t1: "Toque seu cotovelo.", st1: "(/tâtch iór él-bôu/)", s2: "My elbow hurts.", t2: "Meu cotovelo dói.", st2: "(/mai él-bôu hûrts/)" },
-                { pt: "COM-PU-TA-DOR", en: "Computer", tr: "(KÔM-PIÚ-TÊR)", emoji: "💻", s1: "Turn on the computer.", t1: "Ligue o computador.", st1: "(/tûrn on dâ kôm-piú-têr/)", s2: "Fast computer.", t2: "Computador rápido.", st2: "(/fés-t kôm-piú-têr/)" }
+                { pt: "CO-TO-VE-LO", en: "Elbow", tr: "(ÉL-BÔU)", emoji: "💪", s1: "Touch your elbow.", t1: "Toque seu cotovelo.", st1: "(/tâtch iór él-bôu/)", s2: "Bend your elbow.", t2: "Dobre o seu cotovelo.", st2: "(/bénd iór él-bôu/)" },
+                { pt: "CO-RO-A", en: "Crown", tr: "(KRÁUN)", emoji: "👑", s1: "A golden crown.", t1: "Uma coroa dourada.", st1: "(/ê gôul-dên kráun/)", s2: "The king wears a crown.", t2: "O rei usa uma coroa.", st2: "(/dâ kíng uêrs ê kráun/)" }
             ],
             cu: [
                 { pt: "CU-BO", en: "Cube", tr: "(KIÚB)", emoji: "🧊", s1: "Ice cube.", t1: "Cubo de gelo.", st1: "(/áis kiúb/)", s2: "A red cube.", t2: "Um cubo vermelho.", st2: "(/ê réd kiúb/)" },
                 { pt: "CU-RA-TI-VO", en: "Band-aid", tr: "(BÉND-ÊID)", emoji: "🩹", s1: "I need a band-aid.", t1: "Eu preciso de um curativo.", st1: "(/ai níd ê bénd-êid/)", s2: "Small band-aid.", t2: "Curativo pequeno.", st2: "(/smól bénd-êid/)" },
                 { pt: "CU-E-CA", en: "Underwear", tr: "(ÂN-DÊR-UÉR)", emoji: "🩲", s1: "Wear clean underwear.", t1: "Use cueca limpa.", st1: "(/uêr klín ân-dêr-uér/)", s2: "Blue underwear.", t2: "Cueca azul.", st2: "(/blú ân-dêr-uér/)" },
-                { pt: "CUP-CA-KE", en: "Cupcake", tr: "(KÂP-KÊIK)", emoji: "🧁", s1: "Delicious cupcake.", t1: "Cupcake delicioso.", st1: "(/di-lí-shâs kâp-kêik/)", s2: "Pink cupcake.", t2: "Cupcake rosa.", st2: "(/pínk kâp-kêik/)" },
                 { pt: "CU-CO", en: "Cuckoo", tr: "(KÚ-KÚ)", emoji: "🕰️", s1: "Cuckoo clock.", t1: "Relógio de cuco.", st1: "(/kú-kú klók/)", s2: "Hear the cuckoo.", t2: "Ouça o cuco.", st2: "(/hír dâ kú-kú/)" },
                 { pt: "CU-PI-DO", en: "Cupid", tr: "(KIÚ-PID)", emoji: "🏹", s1: "Cupid's arrow.", t1: "Flecha do cupido.", st1: "(/kiú-pidz é-rou/)", s2: "Little cupid.", t2: "Pequeno cupido.", st2: "(/lí-tol kiú-pid/)" },
-                { pt: "CUI-A", en: "Gourd", tr: "(GÓRD)", emoji: "🥣", s1: "Wooden gourd.", t1: "Cuia de madeira.", st1: "(/uú-dên górd/)", s2: "Tea in the gourd.", t2: "Chá na cuia.", st2: "(/ti in dâ górd/)" },
                 { pt: "CU-PIM", en: "Termite", tr: "(TÊR-MÁIT)", emoji: "🐜", s1: "The termite eats wood.", t1: "O cupim come madeira.", st1: "(/dâ têr-máit íts uúd/)", s2: "Small termite.", t2: "Cupim pequeno.", st2: "(/smól têr-máit/)" },
-                { pt: "CUS-CUZ", en: "Couscous", tr: "(KÚS-KÚS)", emoji: "🍲", s1: "I love couscous.", t1: "Eu amo cuscuz.", st1: "(/ai lâv kús-kús/)", s2: "Yellow couscous.", t2: "Cuscuz amarelo.", st2: "(/ié-lou kús-kús/)" },
-                { pt: "CUR-VA", en: "Curve", tr: "(KÊRV)", emoji: "↩️", s1: "Dangerous curve.", t1: "Curva perigosa.", st1: "(/dên-djê-râs kêrv/)", s2: "Road curve.", t2: "Curva na estrada.", st2: "(/róud kêrv/)" },
                 { pt: "CU-TU-CAR", en: "Poke", tr: "(PÔUK)", emoji: "👈", s1: "Don't poke me.", t1: "Não me cutuque.", st1: "(/dount pôuk mi/)", s2: "Stop poking.", t2: "Pare de cutucar.", st2: "(/stóp pôu-kin/)" },
-                { pt: "CUI-DA-DO", en: "Careful", tr: "(KÉ-R-FUL)", emoji: "⚠️", s1: "Be careful.", t1: "Tenha cuidado.", st1: "(/bi ké-r-ful/)", s2: "Careful with the fire.", t2: "Cuidado com o fogo.", st2: "(/ké-r-ful uíd dâ fái-êr/)" }
+                { pt: "CU-ME", en: "Peak", tr: "(PÍK)", emoji: "⛰️", s1: "Snow on the mountain peak.", t1: "Neve no cume da montanha.", st1: "(/snôu on dâ máun-tên pík/)", s2: "A very high peak.", t2: "Um cume muito alto.", st2: "(/ê vé-ri hái pík/)" },
+                { pt: "CU-RI-O-SO", en: "Curious", tr: "(KIÚ-RI-ÂS)", emoji: "🧐", s1: "The cat is curious.", t1: "O gato é curioso.", st1: "(/dâ két iz kiú-ri-âs/)", s2: "A curious child.", t2: "Uma criança curiosa.", st2: "(/ê kiú-ri-âs tcháild/)" }
             ],
             cao: [
                 { pt: "CÃO", en: "Dog", tr: "(DÓG)", emoji: "🐕", s1: "The dog is a friend.", t1: "O cão é um amigo.", st1: "(/dâ dóg iz ê frénd/)", s2: "Good dog!", t2: "Bom cão!", st2: "(/gud dóg/)" },
@@ -343,28 +1088,373 @@
                 { pt: "FAL-CÃO", en: "Falcon", tr: "(FÉL-KÔN)", emoji: "🦅", s1: "The falcon flies.", t1: "O falcão voa.", st1: "(/dâ fél-kôn fláiz/)", s2: "Sharp eyes.", t2: "Olhos afiados.", st2: "(/shárp áis/)" },
                 { pt: "FU-RA-CÃO", en: "Hurricane", tr: "(HÊ-RI-KÊIN)", emoji: "🌀", s1: "Powerful hurricane.", t1: "Furacão poderoso.", st1: "(/páu-êr-ful hê-ri-kêin/)", s2: "Hurricane wind.", t2: "Vento de furacão.", st2: "(/hê-ri-kêin uínd/)" },
                 { pt: "BAL-CÃO", en: "Counter", tr: "(KÁUN-TÊR)", emoji: "🏪", s1: "On the counter.", t1: "No balcão.", st1: "(/on dâ káun-têr/)", s2: "Kitchen counter.", t2: "Balcão da cozinha.", st2: "(/kí-tchên káun-têr/)" },
-                { pt: "MA-CA-CÃO", en: "Overalls", tr: "(ÔU-VÊR-ÓLZ)", emoji: "👖", s1: "Blue overalls.", t1: "Macacão azul.", st1: "(/blu ôu-vêr-ólz/)", s2: "Wear overalls.", t2: "Veste macacão.", st2: "(/uêr ôu-vêr-ólz/)" },
-                { pt: "FA-CÃO", en: "Machete", tr: "(MÂ-SHÉ-TI)", emoji: "🔪", s1: "Sharp machete.", t1: "Facão afiado.", st1: "(/shárp mâ-shé-ti/)", s2: "Use the machete.", t2: "Use o facão.", st2: "(/iuz dâ mâ-shé-ti/)" },
-                { pt: "CAS-CÃO", en: "Smudgy", tr: "(SMÂ-DJI)", emoji: "🧖‍♂️", s1: "Don't be smudgy.", t1: "Não sejas um cascão.", st1: "(/dount bi smâ-dji/)", s2: "Clean boy.", t2: "Menino limpo.", st2: "(/klín bói/)" }
+                { pt: "MA-CA-CÃO", en: "Overalls", tr: "(ÔU-VÊR-ÓLZ)", emoji: "👖", s1: "Blue overalls.", t1: "Macacão azul.", st1: "(/blu ôu-vêr-ólz/)", s2: "Wear your overalls.", t2: "Vista o seu macacão.", st2: "(/uêr iór ôu-vêr-ólz/)" },
+                { pt: "FA-CÃO", en: "Machete", tr: "(MÂ-SHÉ-TI)", emoji: "🔪", s1: "The farmer uses a machete.", t1: "O fazendeiro usa um facão.", st1: "(/dâ fár-mêr iú-ziz ê mâ-shé-ti/)", s2: "Careful with the machete.", t2: "Cuidado com o facão.", st2: "(/kér-ful uíd dâ mâ-shé-ti/)" },
+                { pt: "CAS-CÃO", en: "Smudgy", tr: "(SMÂ-DJI)", emoji: "🧖‍♂️", s1: "Don't be smudgy.", t1: "Não seja um cascão.", st1: "(/dount bi smâ-dji/)", s2: "Take a nice bath!", t2: "Tome um bom banho!", st2: "(/têik ê náis béth/)" },
+                { pt: "BO-CÃO", en: "Big Mouth", tr: "(BÍG MÁUTH)", emoji: "😮", s1: "Open a big mouth!", t1: "Abra um bocão!", st1: "(/ôu-pên ê big máuth/)", s2: "The hippo has a big mouth.", t2: "O hipopótamo tem um bocão.", st2: "(/dâ hí-pou hés ê big máuth/)" }
             ]
         };
 
-        // --- LÓGICA DO JOGO ---
-        function shuffle(array) {
-            const newArray = [...array];
-            for (let i = newArray.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+        /* =====================================================================
+           2. EFEITOS SONOROS (WEB AUDIO API) E MOTOR DE FALA APRIMORADO (EN/PT)
+           ===================================================================== */
+        let audioCtx = null;
+        let speechSlowMode = false;
+        let allVoices = [];
+        let selectedEnVoiceURI = "";
+        let speechQueueTimeout = null;
+
+        function initAudio() {
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+            } catch (e) {
+                console.warn('Web Audio indisponível:', e);
             }
-            return newArray;
         }
 
-        window.checkSyllable = function(btn, fullWord, correctSyllableText, cardId) {
+        function playSound(type) {
+            initAudio();
+            if (!audioCtx) return;
+            try {
+                const now = audioCtx.currentTime;
+                if (type === 'plim') {
+                    const osc = audioCtx.createOscillator();
+                    const gn = audioCtx.createGain();
+                    osc.connect(gn); gn.connect(audioCtx.destination);
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(880, now);
+                    osc.frequency.exponentialRampToValueAtTime(1560, now + 0.12);
+                    gn.gain.setValueAtTime(0.25, now);
+                    gn.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+                    osc.start(now); osc.stop(now + 0.36);
+                } else if (type === 'pop') {
+                    const osc = audioCtx.createOscillator();
+                    const gn = audioCtx.createGain();
+                    osc.connect(gn); gn.connect(audioCtx.destination);
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(520, now);
+                    osc.frequency.exponentialRampToValueAtTime(780, now + 0.08);
+                    gn.gain.setValueAtTime(0.18, now);
+                    gn.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+                    osc.start(now); osc.stop(now + 0.14);
+                } else if (type === 'error') {
+                    const osc = audioCtx.createOscillator();
+                    const gn = audioCtx.createGain();
+                    osc.connect(gn); gn.connect(audioCtx.destination);
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(210, now);
+                    osc.frequency.linearRampToValueAtTime(135, now + 0.22);
+                    gn.gain.setValueAtTime(0.24, now);
+                    gn.gain.linearRampToValueAtTime(0.001, now + 0.26);
+                    osc.start(now); osc.stop(now + 0.28);
+                } else if (type === 'success') {
+                    [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
+                        const osc = audioCtx.createOscillator();
+                        const gn = audioCtx.createGain();
+                        osc.connect(gn); gn.connect(audioCtx.destination);
+                        osc.type = 'triangle';
+                        osc.frequency.value = freq;
+                        gn.gain.setValueAtTime(0.22, now + i * 0.09);
+                        gn.gain.exponentialRampToValueAtTime(0.001, now + 0.65 + i * 0.09);
+                        osc.start(now + i * 0.09);
+                        osc.stop(now + 0.7 + i * 0.09);
+                    });
+                }
+            } catch (e) {}
+        }
+
+        // Ranqueamento inteligente das melhores vozes naturais em Inglês e Português
+        function scoreEnglishVoice(v) {
+            const name = (v.name || '').toLowerCase();
+            const lang = (v.lang || '').toLowerCase();
+            if (!lang.startsWith('en')) return -100;
+
+            const badList = ['albert', 'bad news', 'bahh', 'bells', 'boing', 'bubbles', 'cellos', 'deranged', 'good news', 'hysterical', 'jester', 'organ', 'superstar', 'trinoids', 'whisper', 'wobble', 'zarvox', 'eloquence'];
+            if (badList.some(b => name.includes(b))) return -50;
+
+            let score = 0;
+            if (lang === 'en-us' || lang === 'en_us') score += 35;
+            else if (lang === 'en-gb') score += 20;
+            else score += 10;
+
+            if (name.includes('natural')) score += 60;
+            if (name.includes('online')) score += 45;
+            if (name.includes('neural')) score += 55;
+            if (name.includes('enhanced') || name.includes('premium')) score += 50;
+            if (name.includes('siri')) score += 48;
+            if (name.includes('google us english')) score += 52;
+            if (name.includes('aria') || name.includes('jenny') || name.includes('ava') || name.includes('samantha') || name.includes('allison') || name.includes('nicky')) score += 42;
+            if (name.includes('zira') || name.includes('david')) score += 18;
+            if (!v.localService) score += 10;
+            return score;
+        }
+
+        function scorePortugueseVoice(v) {
+            const name = (v.name || '').toLowerCase();
+            const lang = (v.lang || '').toLowerCase();
+            if (!lang.startsWith('pt')) return -100;
+            let score = 0;
+            if (lang === 'pt-br' || lang === 'pt_br') score += 50;
+            else score += 10;
+            if (name.includes('natural') || name.includes('neural') || name.includes('enhanced') || name.includes('premium')) score += 50;
+            if (name.includes('google português do brasil')) score += 48;
+            if (name.includes('luciana') || name.includes('francisca') || name.includes('thalita') || name.includes('maria')) score += 40;
+            return score;
+        }
+
+        function loadVoices() {
+            if (!('speechSynthesis' in window)) return;
+            allVoices = window.speechSynthesis.getVoices() || [];
+            populateEnglishVoiceSelector();
+        }
+
+        function populateEnglishVoiceSelector() {
+            const sel = document.getElementById('en-voice-select');
+            if (!sel || allVoices.length === 0) return;
+
+            const enVoices = allVoices
+                .filter(v => scoreEnglishVoice(v) > 0)
+                .sort((a, b) => scoreEnglishVoice(b) - scoreEnglishVoice(a));
+
+            const prev = sel.value || selectedEnVoiceURI;
+            sel.innerHTML = `<option value="">✨ Automática (Melhor)</option>`;
+            enVoices.slice(0, 14).forEach(v => {
+                const opt = document.createElement('option');
+                opt.value = v.voiceURI;
+                opt.textContent = `${v.name.replace('Microsoft ', '').replace('Google ', '')} (${v.lang})`;
+                sel.appendChild(opt);
+            });
+            if (prev && enVoices.some(v => v.voiceURI === prev)) {
+                sel.value = prev;
+            }
+        }
+
+        function onVoiceSelectChange() {
+            const sel = document.getElementById('en-voice-select');
+            selectedEnVoiceURI = sel ? sel.value : "";
+            testEnglishVoice();
+        }
+
+        function testEnglishVoice() {
+            speakEN("Hello! Let's learn the letter C together!");
+        }
+
+        function toggleSpeechSpeed() {
+            speechSlowMode = !speechSlowMode;
+            const btn = document.getElementById('speed-toggle-btn');
+            btn.textContent = speechSlowMode ? '🐢 Modo: Bem Devagar' : '🐰 Modo: Normal';
+            showToast(speechSlowMode ? 'Áudio ajustado para bem devagar 🐢' : 'Áudio ajustado para velocidade normal 🐰');
+            speakPT(speechSlowMode ? 'Modo bem devagar ativado!' : 'Modo normal ativado!');
+        }
+
+        function getBestVoice(langPrefix) {
+            if (allVoices.length === 0 && 'speechSynthesis' in window) {
+                allVoices = window.speechSynthesis.getVoices() || [];
+            }
+            if (langPrefix === 'en') {
+                if (selectedEnVoiceURI) {
+                    const chosen = allVoices.find(v => v.voiceURI === selectedEnVoiceURI);
+                    if (chosen) return chosen;
+                }
+                const ranked = allVoices.filter(v => scoreEnglishVoice(v) > 0).sort((a, b) => scoreEnglishVoice(b) - scoreEnglishVoice(a));
+                return ranked[0] || null;
+            } else {
+                const ranked = allVoices.filter(v => scorePortugueseVoice(v) > 0).sort((a, b) => scorePortugueseVoice(b) - scorePortugueseVoice(a));
+                return ranked[0] || null;
+            }
+        }
+
+        function speakText(text, lang = 'pt-BR', rateOverride = null, onEndCallback = null) {
+            if (!('speechSynthesis' in window) || !text) {
+                if (onEndCallback) onEndCallback();
+                return;
+            }
+            try {
+                clearTimeout(speechQueueTimeout);
+                window.speechSynthesis.cancel();
+
+                speechQueueTimeout = setTimeout(() => {
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    window._activeUtterance = utterance;
+
+                    const isEn = lang.toLowerCase().startsWith('en');
+                    const voice = getBestVoice(isEn ? 'en' : 'pt');
+                    if (voice) {
+                        utterance.voice = voice;
+                        utterance.lang = voice.lang;
+                    } else {
+                        utterance.lang = isEn ? 'en-US' : 'pt-BR';
+                    }
+
+                    const baseRate = isEn ? (speechSlowMode ? 0.70 : 0.86) : (speechSlowMode ? 0.76 : 0.92);
+                    utterance.rate = rateOverride !== null ? rateOverride : baseRate;
+                    utterance.pitch = isEn ? 1.04 : 1.02;
+
+                    if (onEndCallback) {
+                        utterance.onend = onEndCallback;
+                        utterance.onerror = onEndCallback;
+                    }
+
+                    window.speechSynthesis.speak(utterance);
+                }, 45);
+            } catch (e) {
+                console.warn('Erro ao falar:', e);
+                if (onEndCallback) onEndCallback();
+            }
+        }
+
+        function speakSequence(items) {
+            if (!items || items.length === 0) return;
+            const [first, ...rest] = items;
+            speakText(first.text, first.lang, first.rate ?? null, () => {
+                if (rest.length > 0) {
+                    setTimeout(() => speakSequence(rest), 220);
+                }
+            });
+        }
+
+        function speakPT(text) {
+            speakText(text, 'pt-BR');
+        }
+
+        function speakSlowPT(textWithHyphens) {
+            const cleanText = textWithHyphens.replace(/-/g, "").toLowerCase();
+            speakText(cleanText, 'pt-BR', speechSlowMode ? 0.68 : 0.80);
+        }
+
+        function speakEN(text, btnEl = null) {
+            if (btnEl) {
+                btnEl.classList.add('speaking');
+                speakText(text, 'en-US', null, () => btnEl.classList.remove('speaking'));
+            } else {
+                speakText(text, 'en-US');
+            }
+        }
+
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = loadVoices;
+            loadVoices();
+        }
+
+        let toastTimer = null;
+        function showToast(msg) {
+            const el = document.getElementById('toast-pill');
+            if (!el) return;
+            el.textContent = msg;
+            el.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => el.classList.remove('show'), 2800);
+        }
+
+        /* =====================================================================
+           3. EXPORTAÇÃO PARA PDF (EM BRANCO OU PREENCHIDO COM MARCAÇÕES E DESENHOS)
+           ===================================================================== */
+        function loadStudentName() {
+            try {
+                const name = localStorage.getItem('cbk_student_name') || '';
+                const input = document.getElementById('student-name-input');
+                if (input && name) input.value = name;
+            } catch (e) {}
+        }
+
+        window.saveStudentName = function(val) {
+            try {
+                localStorage.setItem('cbk_student_name', val.trim());
+            } catch (e) {}
+        };
+
+        /**
+         * Prepara todas as lousas (desenhos + letras/formas) e marcações de sílabas
+         * para gerar um PDF super nítido, esteja o caderno em branco ou preenchido.
+         */
+        window.prepareAndSavePDF = function() {
+            try {
+                initAudio();
+                playSound('pop');
+
+                // 1) Destrava a tela e fecha a barra flutuante para não atrapalhar o PDF
+                unlockPageScroll(true);
+                toggleToolDock(false);
+
+                // 2) Preenche nome do aluninho, data atual e progresso no cabeçalho de impressão
+                const nameInput = document.getElementById('student-name-input');
+                const studentName = (nameInput && nameInput.value.trim()) ? nameInput.value.trim() : '___________________________________';
+                const printNameEl = document.getElementById('print-student-name');
+                if (printNameEl) printNameEl.textContent = studentName;
+
+                const printDateEl = document.getElementById('print-date');
+                if (printDateEl) {
+                    const today = new Date();
+                    printDateEl.textContent = today.toLocaleDateString('pt-BR');
+                }
+
+                const starsText = document.getElementById('stars-counter')?.textContent || '0 / 30 Desafios';
+                const printStarsEl = document.getElementById('print-stars-summary');
+                if (printStarsEl) printStarsEl.textContent = `${starsText} ⭐`;
+
+                // 3) Converte cada <canvas> em imagem PNG de respaldo para sair 100% fiel no PDF (iOS/Android/Desktop)
+                sectionsMeta.forEach(sec => {
+                    clearSelectedTiles(sec.id);
+                    const b = boards[sec.id];
+                    const imgEl = document.getElementById(`print-img-${sec.id}`);
+                    if (b && b.canvas && imgEl) {
+                        try {
+                            imgEl.src = b.canvas.toDataURL('image/png');
+                        } catch (err) {
+                            console.warn('Não foi possível gerar snapshot da lousa:', sec.id, err);
+                        }
+                    }
+                });
+
+                showToast('📄 Preparando PDF! Escolha "Salvar como PDF" na janela que abrir.');
+                speakPT('Preparando o seu caderno em P D F! Escolha salvar como P D F.');
+
+                // 4) Pequeno atraso para garantir renderização das imagens antes de abrir o diálogo de PDF
+                setTimeout(() => {
+                    window.print();
+                }, 260);
+            } catch (e) {
+                console.error('Erro ao preparar PDF:', e);
+                showToast('Use o menu Imprimir do navegador e escolha Salvar como PDF.');
+            }
+        };
+
+        /* =====================================================================
+           4. RENDERIZAÇÃO DAS SESSÕES, CARTÕES, DESAFIOS E LOUSAS
+           ===================================================================== */
+        function shuffle(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function shuffleDifferent(arr) {
+            if (arr.length <= 1) return [...arr];
+            const uniqueSet = new Set(arr);
+            if (uniqueSet.size === 1) return [...arr];
+            let res = shuffle(arr);
+            let tries = 0;
+            while (res.join('-') === arr.join('-') && tries < 10) {
+                res = shuffle(arr);
+                tries++;
+            }
+            return res;
+        }
+
+        window.checkSyllable = function(btn, fullWord, clickedSyllable, cardId) {
             const container = document.getElementById(`syllables-${cardId}`);
-            const currentIndex = parseInt(container.dataset.currentIndex);
+            const currentIndex = parseInt(container.dataset.currentIndex, 10);
             const correctOrder = fullWord.split("-");
 
-            if (correctSyllableText === correctOrder[currentIndex]) {
+            if (clickedSyllable === correctOrder[currentIndex]) {
                 playSound('plim');
                 btn.classList.add('syllable-correct');
                 container.dataset.currentIndex = currentIndex + 1;
@@ -373,143 +1463,1471 @@
                     setTimeout(() => {
                         playSound('success');
                         const emojiBtn = document.getElementById(`emoji-${cardId}`);
-                        emojiBtn.classList.add('completed'); 
+                        if (emojiBtn) emojiBtn.classList.add('completed');
                         speakSlowPT(fullWord);
-                    }, 500);
+                    }, 380);
+                } else {
+                    speakText(clickedSyllable.toLowerCase(), 'pt-BR', 0.95);
                 }
             } else {
                 playSound('error');
                 btn.classList.add('syllable-wrong');
-                setTimeout(() => {
-                    btn.classList.remove('syllable-wrong');
-                }, 500);
+                setTimeout(() => btn.classList.remove('syllable-wrong'), 480);
             }
         };
 
-        function renderBlocks() {
+        function escapeJS(str) {
+            return str.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+        }
+
+        function renderAllSections() {
+            const contentArea = document.getElementById('content-area');
             const vocabContainer = document.getElementById('vocab-container');
+            contentArea.innerHTML = '';
+            vocabContainer.innerHTML = '';
+
             let cardCounter = 0;
 
-            for (const section in data) {
-                const container = document.getElementById(`grid-${section}`);
-                if (!container) continue;
+            sectionsMeta.forEach(sec => {
+                const items = data[sec.id] || [];
+                const sectionEl = document.createElement('section');
+                sectionEl.id = `sec-${sec.id}`;
+                sectionEl.className = 'mb-20 scroll-mt-36';
 
-                data[section].forEach(item => {
+                let cardsHTML = '';
+                items.forEach(item => {
                     cardCounter++;
                     const cardId = `card-${cardCounter}`;
                     const syllablesCorrect = item.pt.split("-");
-                    const syllablesToRender = syllablesCorrect.length > 1 ? shuffle(syllablesCorrect) : syllablesCorrect;
-                    
-                    let sylButtons = syllablesToRender.map(s => 
-                        `<button onclick="checkSyllable(this, '${item.pt}', '${s}', '${cardId}')" class="syllable-game-btn">${s}</button>`
-                    ).join("");
-                    
-                    const card = `
+                    const syllablesShuffled = shuffleDifferent(syllablesCorrect);
+
+                    const sylButtons = syllablesShuffled.map(s =>
+                        `<button onclick="checkSyllable(this, '${escapeJS(item.pt)}', '${escapeJS(s)}', '${cardId}')" class="syllable-game-btn">${s}</button>`
+                    ).join('');
+
+                    cardsHTML += `
                         <div class="card-word">
                             <div class="p-5 flex flex-col items-center gap-4 h-full">
-                                <div id="emoji-${cardId}" onclick="speakSlowPT('${item.pt}')" class="emoji-container emoji-btn w-24 h-24 bg-gradient-to-br from-indigo-50 to-white rounded-full flex items-center justify-center text-5xl shadow-inner border border-indigo-100" title="Toque para ouvir em Português">
+                                <div id="emoji-${cardId}" onclick="speakSlowPT('${escapeJS(item.pt)}')" class="emoji-btn w-24 h-24 bg-gradient-to-br from-indigo-50 to-white rounded-full flex items-center justify-center text-5xl shadow-inner border-2 border-indigo-100" title="Toque para ouvir em Português">
                                     ${item.emoji}
                                 </div>
                                 <div class="w-full text-center flex-1 flex flex-col">
                                     <div id="syllables-${cardId}" data-current-index="0" class="flex gap-2 mb-4 justify-center flex-wrap">${sylButtons}</div>
-                                    <div class="bg-indigo-50 rounded-xl p-3 mb-4 border border-indigo-100">
+                                    <div class="bg-indigo-50/90 rounded-2xl p-3 mb-4 border border-indigo-100">
                                         <div class="flex items-center justify-center gap-3">
                                             <span class="text-2xl font-bold text-indigo-700 uppercase tracking-wide font-sans">${item.en}</span>
-                                            <button onclick="speakEN('${item.en}')" class="btn-audio shadow-sm" aria-label="Ouvir em inglês">🔊</button>
+                                            <button onclick="speakEN('${escapeJS(item.en)}', this)" class="btn-audio shadow-sm" aria-label="Ouvir ${item.en} em inglês">🔊</button>
                                         </div>
                                         <span class="transcription font-mono mt-1 block">${item.tr}</span>
                                     </div>
-                                    <div class="bg-gray-50 p-4 rounded-xl border-l-4 border-indigo-300 text-left space-y-4 mt-auto shadow-sm">
-                                        <div class="relative group">
+                                    <div class="bg-slate-50 p-4 rounded-2xl border-l-4 border-indigo-300 text-left space-y-3.5 mt-auto shadow-sm">
+                                        <div>
                                             <div class="flex justify-between items-start gap-2">
-                                                <span class="text-[13px] font-bold text-gray-800 leading-tight">${item.s1}</span>
-                                                <button onclick="speakEN('${item.s1.replace(/'/g, "\\'")}')" class="btn-audio w-6 h-6 text-[10px]" aria-label="Ouvir frase 1">🔊</button>
+                                                <span class="text-[13px] font-bold text-slate-800 leading-tight">${item.s1}</span>
+                                                <button onclick="speakEN('${escapeJS(item.s1)}', this)" class="btn-audio w-7 h-7 text-xs" aria-label="Ouvir frase 1">🔊</button>
                                             </div>
                                             <span class="translation-text">${item.t1}</span>
-                                            <span class="simplified-pron mt-1 block">${item.st1}</span>
+                                            <span class="simplified-pron mt-0.5 block">${item.st1}</span>
                                         </div>
-                                        <div class="relative group border-t border-gray-200 pt-3">
+                                        <div class="border-t border-slate-200 pt-3">
                                             <div class="flex justify-between items-start gap-2">
-                                                <span class="text-[13px] font-bold text-gray-800 leading-tight">${item.s2}</span>
-                                                <button onclick="speakEN('${item.s2.replace(/'/g, "\\'")}')" class="btn-audio w-6 h-6 text-[10px]" aria-label="Ouvir frase 2">🔊</button>
+                                                <span class="text-[13px] font-bold text-slate-800 leading-tight">${item.s2}</span>
+                                                <button onclick="speakEN('${escapeJS(item.s2)}', this)" class="btn-audio w-7 h-7 text-xs" aria-label="Ouvir frase 2">🔊</button>
                                             </div>
                                             <span class="translation-text">${item.t2}</span>
-                                            <span class="simplified-pron mt-1 block">${item.st2}</span>
+                                            <span class="simplified-pron mt-0.5 block">${item.st2}</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>`;
-                    
-                    container.innerHTML += card;
-
-                    const vocabCard = `
-                        <div class="vocab-item">
-                            <div class="vocab-content">
-                                <span class="vocab-en">${item.en}</span>
-                                <span class="vocab-ipa">${item.tr}</span>
-                                <span class="vocab-pt">${item.pt.replace(/-/g, "")}</span>
-                            </div>
-                            <button onclick="speakEN('${item.en}')" class="btn-audio" aria-label="Ouvir ${item.en}">🔊</button>
                         </div>
                     `;
-                    vocabContainer.innerHTML += vocabCard;
+
+                    vocabContainer.innerHTML += `
+                        <div class="vocab-item">
+                            <div class="flex items-center gap-3">
+                                <span class="text-3xl">${item.emoji}</span>
+                                <div class="flex flex-col">
+                                    <span class="font-bold text-slate-800 text-lg leading-tight">${item.en}</span>
+                                    <span class="font-mono text-amber-600 text-xs font-semibold">${item.tr}</span>
+                                    <span class="text-xs font-bold text-indigo-500 uppercase mt-0.5">${item.pt}</span>
+                                </div>
+                            </div>
+                            <div class="flex gap-1.5">
+                                <button onclick="speakSlowPT('${escapeJS(item.pt)}')" class="btn-audio bg-emerald-50 text-emerald-700 border-emerald-200" title="Ouvir em Português">🇧🇷</button>
+                                <button onclick="speakEN('${escapeJS(item.en)}', this)" class="btn-audio" title="Ouvir em Inglês">🇺🇸</button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                // Botões de 5 Desafios (Fácil -> Difícil)
+                const challengeButtonsHTML = `
+                    <div class="challenge-strip">
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+                            <div>
+                                <h3 class="kids-font text-xl md:text-2xl text-indigo-700 flex items-center gap-2">
+                                    <span>🏆</span> Desafios da Sessão ${sec.label}
+                                </h3>
+                                <p class="text-xs text-slate-500 font-medium">Do mais fácil ao mais difícil • Clique em um botão para ouvir e jogar!</p>
+                            </div>
+                            <span class="text-xs font-bold bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full border border-indigo-200 no-print">
+                                🔊 Com Áudio em Português &amp; Inglês
+                            </span>
+                        </div>
+
+                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                            <button id="cbtn-${sec.id}-1" onclick="startChallenge('${sec.id}', 1)" class="challenge-btn bg-emerald-50 border-emerald-300 text-emerald-800 hover:bg-emerald-100">
+                                <span class="text-xs font-bold uppercase tracking-wider text-emerald-600">⭐ Nível 1 • Fácil</span>
+                                <span class="text-2xl">👂</span>
+                                <span class="text-sm leading-tight">Ouça e Ache</span>
+                            </button>
+                            <button id="cbtn-${sec.id}-2" onclick="startChallenge('${sec.id}', 2)" class="challenge-btn bg-sky-50 border-sky-300 text-sky-800 hover:bg-sky-100">
+                                <span class="text-xs font-bold uppercase tracking-wider text-sky-600">⭐⭐ Nível 2</span>
+                                <span class="text-2xl">🔗</span>
+                                <span class="text-sm leading-tight">Ligue Objetos</span>
+                            </button>
+                            <button id="cbtn-${sec.id}-3" onclick="startChallenge('${sec.id}', 3)" class="challenge-btn bg-amber-50 border-amber-300 text-amber-800 hover:bg-amber-100">
+                                <span class="text-xs font-bold uppercase tracking-wider text-amber-600">⭐⭐⭐ Nível 3</span>
+                                <span class="text-2xl">🇺🇸</span>
+                                <span class="text-sm leading-tight">Listen English</span>
+                            </button>
+                            <button id="cbtn-${sec.id}-4" onclick="startChallenge('${sec.id}', 4)" class="challenge-btn bg-purple-50 border-purple-300 text-purple-800 hover:bg-purple-100">
+                                <span class="text-xs font-bold uppercase tracking-wider text-purple-600">⭐⭐⭐⭐ Nível 4</span>
+                                <span class="text-2xl">🔤</span>
+                                <span class="text-sm leading-tight">Monte a Palavra</span>
+                            </button>
+                            <button id="cbtn-${sec.id}-5" onclick="startChallenge('${sec.id}', 5)" class="challenge-btn bg-rose-50 border-rose-300 text-rose-800 hover:bg-rose-100 col-span-2 sm:col-span-1">
+                                <span class="text-xs font-bold uppercase tracking-wider text-rose-600">⭐⭐⭐⭐⭐ Super</span>
+                                <span class="text-2xl">🚀</span>
+                                <span class="text-sm leading-tight">Bilíngue + Escrita</span>
+                            </button>
+                        </div>
+
+                        <div id="challenge-arena-${sec.id}" class="hidden mt-5 bg-gradient-to-br from-indigo-50/70 to-purple-50/70 border-2 border-indigo-200 rounded-2xl p-4 md:p-6 animate-pop"></div>
+                    </div>
+                `;
+
+                // Lousa Interativa ao final da sessão
+                const guideOptions = items.map(it => {
+                    const clean = it.pt.replace(/-/g, '');
+                    return `<option value="${clean}">${it.emoji} ${clean} (${it.en})</option>`;
+                }).join('');
+
+                const boardHTML = `
+                    <div id="board-wrapper-${sec.id}" class="board-wrapper">
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                            <div class="flex items-center gap-2">
+                                <span class="text-2xl">📝</span>
+                                <div>
+                                    <h3 class="kids-font text-lg md:text-xl text-slate-700 leading-tight">
+                                        Caderno &amp; Lousa Mágica — Sessão ${sec.label}
+                                    </h3>
+                                    <p class="text-xs text-slate-500 no-print">Toque na lousa para travar a tela e escrever à mão livre ou montar palavras!</p>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-wrap items-center gap-2 no-print">
+                                <select onchange="setBoardTraceGuide('${sec.id}', this.value)" class="text-xs font-bold bg-slate-50 border border-slate-300 text-slate-700 rounded-full px-3 py-1.5 cursor-pointer outline-none" title="Escolha uma palavra guia para cobrir ou copiar">
+                                    <option value="">✨ Guia de escrita: Nenhuma</option>
+                                    ${guideOptions}
+                                </select>
+                                <button onclick="readBoardLetters('${sec.id}')" class="text-xs font-bold bg-emerald-100 hover:bg-emerald-200 text-emerald-800 px-3 py-1.5 rounded-full transition" title="Lê em voz alta as letras colocadas na lousa">
+                                    🔊 Ler Palavra
+                                </button>
+                                <button onclick="openToolsForBoard('${sec.id}')" class="text-xs font-bold bg-purple-100 hover:bg-purple-200 text-purple-800 px-3 py-1.5 rounded-full transition">
+                                    🎨 Ferramentas
+                                </button>
+                                <button id="board-lock-btn-${sec.id}" onclick="toggleBoardLock('${sec.id}')" class="text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-1.5 rounded-full shadow-sm transition">
+                                    🔒 Travar Tela p/ Escrever
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Palco da Lousa -->
+                        <div id="board-stage-${sec.id}" class="board-stage lined-paper" data-sec="${sec.id}">
+                            <div id="board-guide-${sec.id}" class="board-trace-guide"></div>
+                            <canvas id="canvas-${sec.id}" class="board-canvas" width="1000" height="440"></canvas>
+                            <img id="print-img-${sec.id}" class="print-canvas-img" alt="Desenho da Lousa ${sec.label}" />
+                            <div id="items-layer-${sec.id}" class="board-items-layer"></div>
+                        </div>
+
+                        <div class="flex flex-wrap items-center justify-between gap-2 mt-2.5 text-xs text-slate-500 no-print">
+                            <span id="board-status-${sec.id}" class="font-semibold text-indigo-600">
+                                💡 Dica: Ao tocar na lousa, a página trava automaticamente para você desenhar sem rolar!
+                            </span>
+                            <div class="flex items-center gap-2">
+                                <button onclick="undoBoard('${sec.id}')" class="font-bold text-amber-700 hover:underline">↩️ Desfazer</button>
+                                <span>•</span>
+                                <button onclick="clearBoard('${sec.id}')" class="font-bold text-rose-600 hover:underline">🗑️ Limpar Lousa</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                sectionEl.innerHTML = `
+                    <div class="flex items-center justify-between gap-3 mb-6 border-b-4 pb-2" style="border-color: ${sec.border};">
+                        <div class="flex items-center gap-3">
+                            <div class="w-11 h-11 rounded-full flex items-center justify-center text-white font-bold shadow-md text-lg kids-font" style="background-color: ${sec.hex};">${sec.num}</div>
+                            <div>
+                                <h2 class="kids-font text-3xl leading-none" style="color: ${sec.hex};">${sec.title}</h2>
+                                <span class="text-xs font-semibold text-slate-400">${items.length} palavras com separação silábica correta</span>
+                            </div>
+                        </div>
+                        <button onclick="speakPT('${escapeJS(sec.title)}! Sílaba ${escapeJS(sec.label)}!')" class="btn-audio w-10 h-10 text-lg" title="Ouvir o som da família">🔊</button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 cards-print-grid">${cardsHTML}</div>
+                    ${challengeButtonsHTML}
+                    ${boardHTML}
+                `;
+
+                contentArea.appendChild(sectionEl);
+            });
+
+            initAllBoards();
+            loadProgressStars();
+        }
+
+        /* =====================================================================
+           5. SISTEMA DOS 5 DESAFIOS PROGRESSIVOS POR SESSÃO (COM ÁUDIO TOTAL)
+           ===================================================================== */
+        const challengeState = {};
+        let completedChallenges = {};
+
+        function loadProgressStars() {
+            try {
+                const saved = localStorage.getItem('cbk_letraC_stars_v2');
+                if (saved) completedChallenges = JSON.parse(saved);
+            } catch (e) { completedChallenges = {}; }
+            updateStarsUI();
+        }
+
+        function markChallengeCompleted(secId, level) {
+            const key = `${secId}-${level}`;
+            completedChallenges[key] = true;
+            try {
+                localStorage.setItem('cbk_letraC_stars_v2', JSON.stringify(completedChallenges));
+            } catch (e) {}
+            updateStarsUI();
+        }
+
+        function updateStarsUI() {
+            let count = 0;
+            sectionsMeta.forEach(sec => {
+                for (let lvl = 1; lvl <= 5; lvl++) {
+                    const btn = document.getElementById(`cbtn-${sec.id}-${lvl}`);
+                    if (completedChallenges[`${sec.id}-${lvl}`]) {
+                        count++;
+                        if (btn) btn.classList.add('done-badge');
+                    }
+                }
+            });
+            const counterEl = document.getElementById('stars-counter');
+            if (counterEl) counterEl.textContent = `${count} / 30 Desafios`;
+        }
+
+        function closeChallengeArena(secId) {
+            const arena = document.getElementById(`challenge-arena-${secId}`);
+            if (arena) {
+                arena.classList.add('hidden');
+                arena.innerHTML = '';
+            }
+            for (let i = 1; i <= 5; i++) {
+                const b = document.getElementById(`cbtn-${secId}-${i}`);
+                if (b) b.classList.remove('active-challenge');
+            }
+        }
+
+        window.startChallenge = function(secId, level) {
+            initAudio();
+            playSound('pop');
+
+            for (let i = 1; i <= 5; i++) {
+                const b = document.getElementById(`cbtn-${secId}-${i}`);
+                if (b) b.classList.toggle('active-challenge', i === level);
+            }
+
+            const arena = document.getElementById(`challenge-arena-${secId}`);
+            if (!arena) return;
+            arena.classList.remove('hidden');
+
+            const pool = data[secId] || [];
+
+            if (level === 1) {
+                const targets = shuffle(pool).slice(0, 2);
+                challengeState[secId] = { level: 1, round: 0, targets };
+                renderChallenge1(secId);
+            } else if (level === 2) {
+                const chosen = shuffle(pool).slice(0, 3);
+                challengeState[secId] = {
+                    level: 2,
+                    items: chosen,
+                    leftItems: shuffle(chosen),
+                    rightItems: shuffle(chosen),
+                    selectedLeft: null,
+                    selectedRight: null,
+                    matchedCount: 0
+                };
+                renderChallenge2(secId);
+                speakPT("Desafio dois! Vamos ligar os objetos! Toque em uma figura e depois na palavra certa para revelar!");
+            } else if (level === 3) {
+                const targets = shuffle(pool).slice(0, 2);
+                challengeState[secId] = { level: 3, round: 0, targets };
+                renderChallenge3(secId);
+            } else if (level === 4) {
+                const target = shuffle(pool)[0];
+                const cleanWord = target.pt.replace(/-/g, '');
+                const letters = cleanWord.split('').map((ch, idx) => ({ id: idx, ch, used: false }));
+                challengeState[secId] = {
+                    level: 4,
+                    target,
+                    cleanWord,
+                    letters: shuffleDifferent(letters),
+                    typedIndex: 0
+                };
+                renderChallenge4(secId);
+                speakPT(`Desafio quatro! Monte a palavra escondida! Escute bem: ${cleanWord.toLowerCase()}! Clique nas letras na ordem certa!`);
+            } else if (level === 5) {
+                const chosen = shuffle(pool).slice(0, 3);
+                challengeState[secId] = {
+                    level: 5,
+                    items: chosen,
+                    leftItems: shuffle(chosen),
+                    rightItems: shuffle(chosen),
+                    selectedLeft: null,
+                    selectedRight: null,
+                    matchedCount: 0,
+                    writingTarget: chosen[0]
+                };
+                renderChallenge5(secId);
+                speakSequence([
+                    { text: "Super Desafio cinco! Modo bilíngue!", lang: "pt-BR" },
+                    { text: "Match the English word with the right picture!", lang: "en-US" }
+                ]);
+            }
+        };
+
+        // DESAFIO 1: Ouça em Português e Ache a Figura
+        function renderChallenge1(secId) {
+            const st = challengeState[secId];
+            const arena = document.getElementById(`challenge-arena-${secId}`);
+            const target = st.targets[st.round];
+            const cleanTarget = target.pt.replace(/-/g, '');
+            const distractors = shuffle(data[secId].filter(x => x.pt !== target.pt)).slice(0, 2);
+            const options = shuffle([target, ...distractors]);
+
+            arena.innerHTML = `
+                <div class="flex items-center justify-between gap-2 mb-3">
+                    <span class="kids-font font-bold text-emerald-700 text-lg">⭐ Desafio 1 (Rodada ${st.round + 1}/2): Ouça e Ache!</span>
+                    <button onclick="closeChallengeArena('${secId}')" class="text-xs font-bold text-slate-400 hover:text-slate-600 no-print">✕ Fechar</button>
+                </div>
+                <div class="text-center mb-4">
+                    <button onclick="speakPT('Onde está: ${escapeJS(cleanTarget.toLowerCase())}?')" class="bg-emerald-500 hover:bg-emerald-600 text-white kids-font font-bold px-6 py-3 rounded-full shadow-md text-lg inline-flex items-center gap-2 transition active:scale-95">
+                        <span>🔊</span> Ouvir a Pergunta
+                    </button>
+                    <p id="c1-feedback-${secId}" class="mt-2 text-sm font-bold text-indigo-700 min-h-[24px]">Toque na figura certa!</p>
+                </div>
+                <div class="grid grid-cols-3 gap-3 max-w-xl mx-auto">
+                    ${options.map(opt => `
+                        <button onclick="answerChallenge1('${secId}', '${escapeJS(opt.pt)}', this)" class="bg-white hover:bg-emerald-50 border-3 border-emerald-200 rounded-2xl p-4 flex flex-col items-center justify-center gap-2 shadow-sm transition active:scale-95">
+                            <span class="text-5xl md:text-6xl">${opt.emoji}</span>
+                            <span class="text-xs font-bold text-slate-400 c1-reveal-text">???</span>
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+
+            speakPT(`Desafio um! Onde está... ${cleanTarget.toLowerCase()}?`);
+        }
+
+        window.answerChallenge1 = function(secId, clickedPt, btnEl) {
+            const st = challengeState[secId];
+            if (!st || st.locked) return;
+            const target = st.targets[st.round];
+            const fb = document.getElementById(`c1-feedback-${secId}`);
+
+            if (clickedPt === target.pt) {
+                st.locked = true;
+                playSound('success');
+                btnEl.classList.add('!bg-emerald-100', '!border-emerald-500', 'scale-105');
+                const revealSpan = btnEl.querySelector('.c1-reveal-text');
+                if (revealSpan) {
+                    revealSpan.textContent = `${target.pt} (${target.en})`;
+                    revealSpan.className = 'text-sm font-extrabold text-emerald-700 kids-font';
+                }
+                if (fb) fb.textContent = `🎉 Acertou! ${target.pt} — em inglês: ${target.en}!`;
+
+                speakSequence([
+                    { text: `Muito bem! Você achou: ${target.pt.replace(/-/g, '').toLowerCase()}!`, lang: 'pt-BR' },
+                    { text: target.en, lang: 'en-US' }
+                ]);
+
+                setTimeout(() => {
+                    st.locked = false;
+                    if (st.round + 1 < st.targets.length) {
+                        st.round++;
+                        renderChallenge1(secId);
+                    } else {
+                        markChallengeCompleted(secId, 1);
+                        showChallengeVictory(secId, 1, 'Você completou o Desafio 1!');
+                    }
+                }, 2200);
+            } else {
+                playSound('error');
+                btnEl.classList.add('syllable-wrong');
+                const clickedClean = clickedPt.replace(/-/g, '').toLowerCase();
+                if (fb) fb.textContent = `Ops! Esse é "${clickedClean}". Tente achar "${target.pt.replace(/-/g, '')}"!`;
+                speakPT(`Ops! Esse é ${clickedClean}. Tente de novo! Onde está ${target.pt.replace(/-/g, '').toLowerCase()}?`);
+                setTimeout(() => btnEl.classList.remove('syllable-wrong'), 500);
+            }
+        };
+
+        // DESAFIO 2: Ligue os Objetos às Palavras
+        function renderChallenge2(secId) {
+            const st = challengeState[secId];
+            const arena = document.getElementById(`challenge-arena-${secId}`);
+
+            arena.innerHTML = `
+                <div class="flex items-center justify-between gap-2 mb-3">
+                    <span class="kids-font font-bold text-sky-700 text-lg">⭐⭐ Desafio 2: Ligue a Figura à Palavra!</span>
+                    <button onclick="closeChallengeArena('${secId}')" class="text-xs font-bold text-slate-400 hover:text-slate-600 no-print">✕ Fechar</button>
+                </div>
+                <p id="c2-feedback-${secId}" class="text-center text-sm font-bold text-indigo-700 mb-4">
+                    Toque em uma figura à esquerda e depois na palavra certa à direita!
+                </p>
+                <div class="grid grid-cols-2 gap-4 max-w-xl mx-auto">
+                    <div class="space-y-3">
+                        ${st.leftItems.map((it, idx) => `
+                            <button id="c2-left-${secId}-${idx}" onclick="selectMatch2('${secId}', 'left', ${idx})" class="match-card w-full text-4xl">
+                                <span>${it.emoji}</span>
+                                <span class="text-xs font-bold text-slate-400 hidden sm:inline">🔊</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div class="space-y-3">
+                        ${st.rightItems.map((it, idx) => `
+                            <button id="c2-right-${secId}-${idx}" onclick="selectMatch2('${secId}', 'right', ${idx})" class="match-card w-full text-lg text-indigo-700">
+                                <span>${it.pt}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        window.selectMatch2 = function(secId, side, idx) {
+            const st = challengeState[secId];
+            if (!st) return;
+            playSound('pop');
+
+            if (side === 'left') {
+                st.selectedLeft = idx;
+                speakPT(`O que é essa figura? Encontre a palavra!`);
+                st.leftItems.forEach((_, i) => {
+                    const el = document.getElementById(`c2-left-${secId}-${i}`);
+                    if (el && !el.classList.contains('matched')) el.classList.toggle('selected', i === idx);
+                });
+            } else {
+                st.selectedRight = idx;
+                const item = st.rightItems[idx];
+                speakSlowPT(item.pt);
+                st.rightItems.forEach((_, i) => {
+                    const el = document.getElementById(`c2-right-${secId}-${i}`);
+                    if (el && !el.classList.contains('matched')) el.classList.toggle('selected', i === idx);
                 });
             }
-        }
 
-        // --- SISTEMA DE FALA OTIMIZADO PARA IPHONE/CHROME ---
-        let voices = [];
-        function loadVoices() { voices = window.speechSynthesis.getVoices(); }
-        if (window.speechSynthesis.onvoiceschanged !== undefined) {
-            window.speechSynthesis.onvoiceschanged = loadVoices;
-        }
-        loadVoices();
+            if (st.selectedLeft !== null && st.selectedRight !== null) {
+                const leftItem = st.leftItems[st.selectedLeft];
+                const rightItem = st.rightItems[st.selectedRight];
+                const leftEl = document.getElementById(`c2-left-${secId}-${st.selectedLeft}`);
+                const rightEl = document.getElementById(`c2-right-${secId}-${st.selectedRight}`);
+                const fb = document.getElementById(`c2-feedback-${secId}`);
 
-        function speakSlowPT(textWithHyphens) {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                const cleanText = textWithHyphens.replace(/-/g, "").toLowerCase();
-                const utterance = new SpeechSynthesisUtterance(cleanText);
-                utterance.lang = 'pt-BR';
-                utterance.rate = 0.8; 
-                utterance.pitch = 1.0; 
-                window.speechSynthesis.speak(utterance);
-            }
-        }
+                if (leftItem.pt === rightItem.pt) {
+                    playSound('success');
+                    leftEl.classList.remove('selected');
+                    rightEl.classList.remove('selected');
+                    leftEl.classList.add('matched');
+                    rightEl.classList.add('matched');
+                    leftEl.innerHTML = `<span class="text-3xl">${leftItem.emoji}</span> <span class="text-xs font-bold">${leftItem.en}</span>`;
+                    rightEl.innerHTML = `<span>✅ ${rightItem.pt}</span>`;
 
-        function speakEN(text) {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(text);
-                
-                if (voices.length === 0) loadVoices();
-                
-                // Tenta encontrar vozes de alta qualidade comuns no iPhone e Chrome
-                const targetVoice = 
-                    voices.find(v => v.lang === 'en-US' && v.name.includes('Samantha')) || // iPhone Top 1
-                    voices.find(v => v.lang === 'en-US' && v.name.includes('Ava')) ||      // iPhone Top 2
-                    voices.find(v => v.lang === 'en-US' && v.name.includes('Google US English')) || // Chrome Padrão
-                    voices.find(v => v.lang === 'en-US' && (v.name.includes('Premium') || v.name.includes('Enhanced'))) ||
-                    voices.find(v => v.lang === 'en-US'); // Fallback
+                    st.matchedCount++;
+                    if (fb) fb.textContent = `🎉 Revelado! ${leftItem.pt} = ${leftItem.en}!`;
+                    speakSequence([
+                        { text: `Acertou! ${leftItem.pt.replace(/-/g, '').toLowerCase()}!`, lang: 'pt-BR' },
+                        { text: leftItem.en, lang: 'en-US' }
+                    ]);
 
-                if (targetVoice) { 
-                    utterance.voice = targetVoice; 
-                    utterance.lang = targetVoice.lang; // Garante o idioma da voz
-                } else { 
-                    utterance.lang = 'en-US'; 
+                    if (st.matchedCount === st.items.length) {
+                        setTimeout(() => {
+                            markChallengeCompleted(secId, 2);
+                            showChallengeVictory(secId, 2, 'Você ligou todos os objetos corretamente!');
+                        }, 1600);
+                    }
+                } else {
+                    playSound('error');
+                    leftEl.classList.add('wrong');
+                    rightEl.classList.add('wrong');
+                    if (fb) fb.textContent = `Ops! Não combinou. Tente ligar novamente!`;
+                    speakPT("Quase! Tente combinar de novo!");
+                    setTimeout(() => {
+                        leftEl.classList.remove('wrong', 'selected');
+                        rightEl.classList.remove('wrong', 'selected');
+                    }, 520);
                 }
-                
-                utterance.rate = 0.85; 
-                window.speechSynthesis.speak(utterance);
+
+                st.selectedLeft = null;
+                st.selectedRight = null;
+            }
+        };
+
+        // DESAFIO 3: Listen in English!
+        function renderChallenge3(secId) {
+            const st = challengeState[secId];
+            const arena = document.getElementById(`challenge-arena-${secId}`);
+            const target = st.targets[st.round];
+            const distractors = shuffle(data[secId].filter(x => x.pt !== target.pt)).slice(0, 2);
+            const options = shuffle([target, ...distractors]);
+
+            arena.innerHTML = `
+                <div class="flex items-center justify-between gap-2 mb-3">
+                    <span class="kids-font font-bold text-amber-700 text-lg">⭐⭐⭐ Desafio 3 (Round ${st.round + 1}/2): Listen in English!</span>
+                    <button onclick="closeChallengeArena('${secId}')" class="text-xs font-bold text-slate-400 hover:text-slate-600 no-print">✕ Fechar</button>
+                </div>
+                <div class="text-center mb-4">
+                    <button onclick="speakEN('Where is the ${escapeJS(target.en)}? ${escapeJS(target.en)}!')" class="bg-amber-500 hover:bg-amber-600 text-white kids-font font-bold px-6 py-3 rounded-full shadow-md text-lg inline-flex items-center gap-2 transition active:scale-95">
+                        <span>🇺🇸 🔊</span> Listen Again (Ouvir em Inglês)
+                    </button>
+                    <p id="c3-feedback-${secId}" class="mt-2 text-sm font-bold text-indigo-700 min-h-[24px]">Escute em inglês e toque na figura certa!</p>
+                </div>
+                <div class="grid grid-cols-3 gap-3 max-w-xl mx-auto">
+                    ${options.map(opt => `
+                        <button onclick="answerChallenge3('${secId}', '${escapeJS(opt.pt)}', this)" class="bg-white hover:bg-amber-50 border-3 border-amber-200 rounded-2xl p-4 flex flex-col items-center justify-center gap-2 shadow-sm transition active:scale-95">
+                            <span class="text-5xl md:text-6xl">${opt.emoji}</span>
+                            <span class="text-xs font-bold text-slate-400 c3-reveal-text">???</span>
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+
+            speakSequence([
+                { text: "Challenge three! Listen in English!", lang: "en-US" },
+                { text: `Where is the ${target.en}? ${target.en}!`, lang: "en-US", rate: 0.78 }
+            ]);
+        }
+
+        window.answerChallenge3 = function(secId, clickedPt, btnEl) {
+            const st = challengeState[secId];
+            if (!st || st.locked) return;
+            const target = st.targets[st.round];
+            const clickedObj = data[secId].find(x => x.pt === clickedPt);
+            const fb = document.getElementById(`c3-feedback-${secId}`);
+
+            if (clickedPt === target.pt) {
+                st.locked = true;
+                playSound('success');
+                btnEl.classList.add('!bg-emerald-100', '!border-emerald-500', 'scale-105');
+                const span = btnEl.querySelector('.c3-reveal-text');
+                if (span) {
+                    span.textContent = `${target.en} • ${target.pt}`;
+                    span.className = 'text-xs sm:text-sm font-extrabold text-emerald-700 kids-font';
+                }
+                if (fb) fb.textContent = `🌟 Awesome! ${target.en} = ${target.pt}!`;
+                speakSequence([
+                    { text: `Great job! ${target.en}!`, lang: 'en-US' },
+                    { text: target.pt.replace(/-/g, '').toLowerCase(), lang: 'pt-BR' }
+                ]);
+
+                setTimeout(() => {
+                    st.locked = false;
+                    if (st.round + 1 < st.targets.length) {
+                        st.round++;
+                        renderChallenge3(secId);
+                    } else {
+                        markChallengeCompleted(secId, 3);
+                        showChallengeVictory(secId, 3, 'Excelente ouvido em inglês! You did it!');
+                    }
+                }, 2200);
+            } else {
+                playSound('error');
+                btnEl.classList.add('syllable-wrong');
+                if (fb) fb.textContent = `Oops! That's "${clickedObj.en}". Try to find "${target.en}"!`;
+                speakEN(`No, that is ${clickedObj.en}. Try again! Where is ${target.en}?`);
+                setTimeout(() => btnEl.classList.remove('syllable-wrong'), 500);
+            }
+        };
+
+        // DESAFIO 4: Monte a Palavra Letra por Letra
+        function renderChallenge4(secId) {
+            const st = challengeState[secId];
+            const arena = document.getElementById(`challenge-arena-${secId}`);
+            const slotsHTML = st.cleanWord.split('').map((ch, idx) => {
+                const filled = idx < st.typedIndex;
+                return `
+                    <div class="w-10 h-12 sm:w-12 sm:h-14 rounded-xl border-2 flex items-center justify-center kids-font text-2xl font-bold transition ${filled ? 'bg-emerald-500 border-emerald-600 text-white shadow-sm' : 'bg-white border-dashed border-purple-300 text-slate-300'}">
+                        ${filled ? ch : '_'}
+                    </div>
+                `;
+            }).join('');
+
+            const colors = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6', '#8b5cf6', '#ec4899'];
+            const letterButtonsHTML = st.letters.map((lObj, idx) => {
+                const bg = colors[idx % colors.length];
+                return `
+                    <button onclick="tapLetterChallenge4('${secId}', ${lObj.id}, this)" ${lObj.used ? 'disabled' : ''} class="kids-font text-xl sm:text-2xl font-bold text-white w-12 h-12 sm:w-14 sm:h-14 rounded-2xl shadow-md transition active:scale-90 ${lObj.used ? 'opacity-25 scale-90 pointer-events-none' : 'hover:scale-105'}" style="background-color: ${bg};">
+                        ${lObj.ch}
+                    </button>
+                `;
+            }).join('');
+
+            arena.innerHTML = `
+                <div class="flex items-center justify-between gap-2 mb-3">
+                    <span class="kids-font font-bold text-purple-700 text-lg">⭐⭐⭐⭐ Desafio 4: Monte a Palavra!</span>
+                    <button onclick="closeChallengeArena('${secId}')" class="text-xs font-bold text-slate-400 hover:text-slate-600 no-print">✕ Fechar</button>
+                </div>
+                <div class="flex flex-col items-center gap-4">
+                    <div class="flex items-center gap-4">
+                        <button onclick="speakSlowPT('${escapeJS(st.target.pt)}')" class="w-20 h-20 bg-white rounded-full border-3 border-purple-200 flex items-center justify-center text-5xl shadow-sm active:scale-95" title="Clique para ouvir a palavra">
+                            ${st.target.emoji}
+                        </button>
+                        <div class="text-left">
+                            <button onclick="speakSlowPT('${escapeJS(st.target.pt)}')" class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold px-3.5 py-1.5 rounded-full shadow-sm">
+                                🔊 Ouvir Palavra
+                            </button>
+                            <div class="text-xs text-slate-500 font-semibold mt-1">Em inglês: <strong class="text-indigo-700">${st.target.en}</strong></div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap justify-center gap-1.5">${slotsHTML}</div>
+                    <p id="c4-feedback-${secId}" class="text-sm font-bold text-purple-700 min-h-[20px]">Toque nas letras na ordem certa!</p>
+                    <div class="flex flex-wrap justify-center gap-2 max-w-lg">${letterButtonsHTML}</div>
+                </div>
+            `;
+        }
+
+        window.tapLetterChallenge4 = function(secId, letterId, btnEl) {
+            const st = challengeState[secId];
+            if (!st) return;
+            const letterObj = st.letters.find(x => x.id === letterId);
+            if (!letterObj || letterObj.used) return;
+
+            const expectedChar = st.cleanWord[st.typedIndex];
+            if (letterObj.ch === expectedChar) {
+                playSound('plim');
+                letterObj.used = true;
+                st.typedIndex++;
+                renderChallenge4(secId);
+
+                if (st.typedIndex === st.cleanWord.length) {
+                    playSound('success');
+                    speakSequence([
+                        { text: `Parabéns! Você montou a palavra ${st.cleanWord.toLowerCase()}!`, lang: 'pt-BR' },
+                        { text: st.target.en, lang: 'en-US' }
+                    ]);
+                    setTimeout(() => {
+                        markChallengeCompleted(secId, 4);
+                        showChallengeVictory(secId, 4, `Palavra revelada: ${st.target.pt} (${st.target.en})!`);
+                    }, 1800);
+                } else {
+                    speakText(letterObj.ch.toLowerCase(), 'pt-BR', 1.0);
+                }
+            } else {
+                playSound('error');
+                btnEl.classList.add('syllable-wrong');
+                const fb = document.getElementById(`c4-feedback-${secId}`);
+                if (fb) fb.textContent = `Ops! A letra "${letterObj.ch}" não vem agora. Dica: a próxima é "${expectedChar}"!`;
+                speakPT(`Ops! Tente outra letra!`);
+                setTimeout(() => btnEl.classList.remove('syllable-wrong'), 450);
+            }
+        };
+
+        // DESAFIO 5: Super Desafio Bilíngue + Missão de Escrita na Lousa
+        function renderChallenge5(secId) {
+            const st = challengeState[secId];
+            const arena = document.getElementById(`challenge-arena-${secId}`);
+
+            arena.innerHTML = `
+                <div class="flex items-center justify-between gap-2 mb-3">
+                    <span class="kids-font font-bold text-rose-700 text-lg">⭐⭐⭐⭐⭐ Super Desafio 5: Bilíngue + Escrita!</span>
+                    <button onclick="closeChallengeArena('${secId}')" class="text-xs font-bold text-slate-400 hover:text-slate-600 no-print">✕ Fechar</button>
+                </div>
+                <p id="c5-feedback-${secId}" class="text-center text-sm font-bold text-rose-700 mb-4">
+                    🇺🇸 Ligue a palavra em Inglês à figura certa! Cada clique fala em voz alta!
+                </p>
+                <div class="grid grid-cols-2 gap-4 max-w-xl mx-auto">
+                    <div class="space-y-3">
+                        ${st.leftItems.map((it, idx) => `
+                            <button id="c5-left-${secId}-${idx}" onclick="selectMatch5('${secId}', 'left', ${idx})" class="match-card w-full text-base sm:text-lg text-sky-800 bg-sky-50/40">
+                                <span>🔊 ${it.en}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div class="space-y-3">
+                        ${st.rightItems.map((it, idx) => `
+                            <button id="c5-right-${secId}-${idx}" onclick="selectMatch5('${secId}', 'right', ${idx})" class="match-card w-full text-4xl">
+                                <span>${it.emoji}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        window.selectMatch5 = function(secId, side, idx) {
+            const st = challengeState[secId];
+            if (!st) return;
+            playSound('pop');
+
+            if (side === 'left') {
+                st.selectedLeft = idx;
+                speakEN(st.leftItems[idx].en);
+                st.leftItems.forEach((_, i) => {
+                    const el = document.getElementById(`c5-left-${secId}-${i}`);
+                    if (el && !el.classList.contains('matched')) el.classList.toggle('selected', i === idx);
+                });
+            } else {
+                st.selectedRight = idx;
+                speakPT("Qual é essa palavra em inglês?");
+                st.rightItems.forEach((_, i) => {
+                    const el = document.getElementById(`c5-right-${secId}-${i}`);
+                    if (el && !el.classList.contains('matched')) el.classList.toggle('selected', i === idx);
+                });
+            }
+
+            if (st.selectedLeft !== null && st.selectedRight !== null) {
+                const leftItem = st.leftItems[st.selectedLeft];
+                const rightItem = st.rightItems[st.selectedRight];
+                const leftEl = document.getElementById(`c5-left-${secId}-${st.selectedLeft}`);
+                const rightEl = document.getElementById(`c5-right-${secId}-${st.selectedRight}`);
+                const fb = document.getElementById(`c5-feedback-${secId}`);
+
+                if (leftItem.pt === rightItem.pt) {
+                    playSound('success');
+                    leftEl.classList.remove('selected');
+                    rightEl.classList.remove('selected');
+                    leftEl.classList.add('matched');
+                    rightEl.classList.add('matched');
+                    leftEl.innerHTML = `<span>✅ ${leftItem.en}</span>`;
+                    rightEl.innerHTML = `<span class="text-2xl">${rightItem.emoji}</span> <span class="text-sm font-bold">${rightItem.pt}</span>`;
+
+                    st.matchedCount++;
+                    if (fb) fb.textContent = `🚀 Perfeito! ${leftItem.en} = ${rightItem.pt}!`;
+                    speakSequence([
+                        { text: `${leftItem.en}!`, lang: 'en-US' },
+                        { text: `${leftItem.pt.replace(/-/g, '').toLowerCase()}!`, lang: 'pt-BR' }
+                    ]);
+
+                    if (st.matchedCount === st.items.length) {
+                        const targetWord = st.writingTarget.pt.replace(/-/g, '');
+                        setTimeout(() => {
+                            markChallengeCompleted(secId, 5);
+                            showChallengeVictory(
+                                secId,
+                                5,
+                                `Incrível! Agora pratique escrevendo "${targetWord}" na Lousa Mágica abaixo!`,
+                                targetWord
+                            );
+                        }, 1600);
+                    }
+                } else {
+                    playSound('error');
+                    leftEl.classList.add('wrong');
+                    rightEl.classList.add('wrong');
+                    if (fb) fb.textContent = `Oops! Tente combinar novamente!`;
+                    speakEN("Try again!");
+                    setTimeout(() => {
+                        leftEl.classList.remove('wrong', 'selected');
+                        rightEl.classList.remove('wrong', 'selected');
+                    }, 520);
+                }
+
+                st.selectedLeft = null;
+                st.selectedRight = null;
+            }
+        };
+
+        function showChallengeVictory(secId, level, message, writeWord = null) {
+            const arena = document.getElementById(`challenge-arena-${secId}`);
+            if (!arena) return;
+            const nextBtn = level < 5
+                ? `<button onclick="startChallenge('${secId}', ${level + 1})" class="bg-indigo-600 hover:bg-indigo-700 text-white kids-font font-bold px-5 py-2.5 rounded-full shadow-md">Próximo Desafio (Nível ${level + 1}) ➡️</button>`
+                : '';
+
+            const writeBtn = writeWord
+                ? `<button onclick="launchWritingMission('${secId}', '${escapeJS(writeWord)}')" class="bg-purple-600 hover:bg-purple-700 text-white kids-font font-bold px-5 py-2.5 rounded-full shadow-md">✍️ Escrever "${writeWord}" na Lousa!</button>`
+                : '';
+
+            arena.innerHTML = `
+                <div class="text-center py-4 space-y-3 animate-pop">
+                    <div class="text-5xl">🏆⭐🎉</div>
+                    <h4 class="kids-font text-2xl text-emerald-700">Desafio ${level} Concluído!</h4>
+                    <p class="text-slate-600 font-semibold">${message}</p>
+                    <div class="flex flex-wrap justify-center gap-3 pt-2 no-print">
+                        <button onclick="startChallenge('${secId}', ${level})" class="bg-white border-2 border-indigo-200 text-indigo-700 kids-font font-bold px-4 py-2 rounded-full">🔄 Jogar de Novo</button>
+                        ${nextBtn}
+                        ${writeBtn}
+                    </div>
+                </div>
+            `;
+        }
+
+        window.launchWritingMission = function(secId, word) {
+            setBoardTraceGuide(secId, word);
+            const wrapper = document.getElementById(`board-wrapper-${secId}`);
+            if (wrapper) {
+                wrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            setTimeout(() => {
+                lockBoard(secId);
+                openToolsForBoard(secId, 'letters');
+                speakPT(`Agora escreva ou monte a palavra ${word.toLowerCase()} na lousa mágica!`);
+            }, 500);
+        };
+
+        /* =====================================================================
+           6. LOUSA INTERATIVA, BLOQUEIO DE TELA MOBILE & BARRA DE FERRAMENTAS
+           ===================================================================== */
+        const boards = {};
+        let activeBoardId = 'ca';
+        let lockedBoardId = null;
+        let savedScrollY = 0;
+
+        const toolState = {
+            mode: 'pen',
+            color: '#2563eb',
+            size: 8
+        };
+
+        const PALETTE_COLORS = [
+            { name: 'Preto', hex: '#1e293b' },
+            { name: 'Vermelho', hex: '#ef4444' },
+            { name: 'Laranja', hex: '#f97316' },
+            { name: 'Amarelo', hex: '#eab308' },
+            { name: 'Verde', hex: '#22c55e' },
+            { name: 'Azul', hex: '#2563eb' },
+            { name: 'Roxo', hex: '#9333ea' },
+            { name: 'Rosa', hex: '#ec4899' },
+            { name: 'Marrom', hex: '#92400e' }
+        ];
+
+        const SHAPES_LIST = [
+            { id: 'circle',   pt: 'Círculo',   en: 'Circle',   svg: c => `<svg viewBox="0 0 100 100" class="w-full h-full"><circle cx="50" cy="50" r="42" fill="${c}" stroke="#fff" stroke-width="5"/></svg>` },
+            { id: 'square',   pt: 'Quadrado',  en: 'Square',   svg: c => `<svg viewBox="0 0 100 100" class="w-full h-full"><rect x="12" y="12" width="76" height="76" rx="12" fill="${c}" stroke="#fff" stroke-width="5"/></svg>` },
+            { id: 'triangle', pt: 'Triângulo', en: 'Triangle', svg: c => `<svg viewBox="0 0 100 100" class="w-full h-full"><polygon points="50,10 92,88 8,88" fill="${c}" stroke="#fff" stroke-width="5" stroke-linejoin="round"/></svg>` },
+            { id: 'star',     pt: 'Estrela',   en: 'Star',     svg: c => `<svg viewBox="0 0 100 100" class="w-full h-full"><polygon points="50,6 63,36 95,39 70,60 78,92 50,74 22,92 30,60 5,39 37,36" fill="${c}" stroke="#fff" stroke-width="4" stroke-linejoin="round"/></svg>` },
+            { id: 'heart',    pt: 'Coração',   en: 'Heart',    svg: c => `<svg viewBox="0 0 100 100" class="w-full h-full"><path d="M50 88 C20 68 8 50 8 33 C8 18 20 8 33 8 C42 8 47 14 50 20 C53 14 58 8 67 8 C80 8 92 18 92 33 C92 50 80 68 50 88 Z" fill="${c}" stroke="#fff" stroke-width="4"/></svg>` },
+            { id: 'diamond',  pt: 'Losango',   en: 'Diamond',  svg: c => `<svg viewBox="0 0 100 100" class="w-full h-full"><polygon points="50,6 92,50 50,94 8,50" fill="${c}" stroke="#fff" stroke-width="5" stroke-linejoin="round"/></svg>` }
+        ];
+
+        function initAllBoards() {
+            sectionsMeta.forEach(sec => {
+                const canvas = document.getElementById(`canvas-${sec.id}`);
+                const stage = document.getElementById(`board-stage-${sec.id}`);
+                if (!canvas || !stage) return;
+
+                const ctx = canvas.getContext('2d', { willReadFrequently: true });
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+
+                boards[sec.id] = {
+                    canvas,
+                    ctx,
+                    stage,
+                    drawing: false,
+                    lastX: 0,
+                    lastY: 0,
+                    history: [],
+                    nextTileX: 24,
+                    nextTileY: 26
+                };
+
+                saveCanvasSnapshot(sec.id);
+
+                const getPos = (clientX, clientY) => {
+                    const rect = canvas.getBoundingClientRect();
+                    return {
+                        x: (clientX - rect.left) * (canvas.width / rect.width),
+                        y: (clientY - rect.top) * (canvas.height / rect.height)
+                    };
+                };
+
+                const startDraw = (e) => {
+                    if (lockedBoardId !== sec.id) {
+                        lockBoard(sec.id, true);
+                    } else {
+                        setActiveBoard(sec.id);
+                    }
+
+                    if (toolState.mode === 'move') {
+                        clearSelectedTiles(sec.id);
+                        return;
+                    }
+
+                    if (e.cancelable) e.preventDefault();
+                    clearSelectedTiles(sec.id);
+
+                    const b = boards[sec.id];
+                    const pt = e.touches ? e.touches[0] : e;
+                    const pos = getPos(pt.clientX, pt.clientY);
+
+                    b.drawing = true;
+                    b.lastX = pos.x;
+                    b.lastY = pos.y;
+
+                    b.ctx.save();
+                    applyBrushStyle(b.ctx);
+                    b.ctx.beginPath();
+                    b.ctx.moveTo(pos.x, pos.y);
+                    b.ctx.lineTo(pos.x + 0.1, pos.y + 0.1);
+                    b.ctx.stroke();
+                    b.ctx.restore();
+                };
+
+                const moveDraw = (e) => {
+                    const b = boards[sec.id];
+                    if (!b.drawing) return;
+                    if (e.cancelable) e.preventDefault();
+
+                    const pt = e.touches ? e.touches[0] : e;
+                    const pos = getPos(pt.clientX, pt.clientY);
+
+                    b.ctx.save();
+                    applyBrushStyle(b.ctx);
+                    b.ctx.beginPath();
+                    b.ctx.moveTo(b.lastX, b.lastY);
+                    b.ctx.lineTo(pos.x, pos.y);
+                    b.ctx.stroke();
+                    b.ctx.restore();
+
+                    b.lastX = pos.x;
+                    b.lastY = pos.y;
+                };
+
+                const endDraw = () => {
+                    const b = boards[sec.id];
+                    if (!b.drawing) return;
+                    b.drawing = false;
+                    saveCanvasSnapshot(sec.id);
+                };
+
+                canvas.addEventListener('pointerdown', startDraw, { passive: false });
+                canvas.addEventListener('pointermove', moveDraw, { passive: false });
+                canvas.addEventListener('pointerup', endDraw);
+                canvas.addEventListener('pointercancel', endDraw);
+                canvas.addEventListener('pointerleave', endDraw);
+
+                stage.addEventListener('touchstart', () => {
+                    if (lockedBoardId !== sec.id) lockBoard(sec.id, true);
+                }, { passive: true });
+                stage.addEventListener('touchmove', (e) => {
+                    if (e.cancelable) e.preventDefault();
+                }, { passive: false });
+            });
+
+            renderToolPalettes();
+            updateActiveBoardIndicators();
+        }
+
+        function applyBrushStyle(ctx) {
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            if (toolState.mode === 'eraser') {
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.lineWidth = toolState.size * 3.2;
+                ctx.globalAlpha = 1.0;
+            } else if (toolState.mode === 'marker') {
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.strokeStyle = toolState.color;
+                ctx.lineWidth = toolState.size * 2.2;
+                ctx.globalAlpha = 0.45;
+            } else {
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.strokeStyle = toolState.color;
+                ctx.lineWidth = toolState.size;
+                ctx.globalAlpha = 1.0;
             }
         }
 
-        window.onload = function() {
-            renderBlocks();
-            setTimeout(loadVoices, 500);
-            document.body.addEventListener('click', function() { initAudio(); }, { once: true });
+        function saveCanvasSnapshot(secId) {
+            const b = boards[secId];
+            if (!b) return;
+            try {
+                const snap = b.ctx.getImageData(0, 0, b.canvas.width, b.canvas.height);
+                b.history.push(snap);
+                if (b.history.length > 20) b.history.shift();
+            } catch (e) {}
+        }
+
+        window.undoBoard = function(secId = activeBoardId) {
+            const b = boards[secId];
+            if (!b) return;
+            if (b.history.length > 1) {
+                b.history.pop();
+                const prev = b.history[b.history.length - 1];
+                b.ctx.putImageData(prev, 0, 0);
+                playSound('pop');
+            } else {
+                showToast('Nada mais para desfazer nesta lousa!');
+            }
         };
+
+        window.clearBoard = function(secId) {
+            const b = boards[secId];
+            if (!b) return;
+            b.ctx.clearRect(0, 0, b.canvas.width, b.canvas.height);
+            b.history = [];
+            saveCanvasSnapshot(secId);
+            const layer = document.getElementById(`items-layer-${secId}`);
+            if (layer) layer.innerHTML = '';
+            b.nextTileX = 24;
+            b.nextTileY = 26;
+            playSound('pop');
+            showToast(`Lousa ${secId.toUpperCase()} limpinha! ✨`);
+        };
+
+        window.clearActiveBoard = function() {
+            clearBoard(activeBoardId);
+        };
+
+        window.setBoardTraceGuide = function(secId, word) {
+            const el = document.getElementById(`board-guide-${secId}`);
+            if (el) el.textContent = word || '';
+            if (word) {
+                playSound('pop');
+                speakPT(`Guia ativada: ${word.toLowerCase()}!`);
+            }
+        };
+
+        window.toggleLinedPaper = function() {
+            const stage = document.getElementById(`board-stage-${activeBoardId}`);
+            if (stage) {
+                stage.classList.toggle('lined-paper');
+                playSound('pop');
+            }
+        };
+
+        function setActiveBoard(secId) {
+            activeBoardId = secId;
+            updateActiveBoardIndicators();
+        }
+
+        function updateActiveBoardIndicators() {
+            const label = activeBoardId.toUpperCase();
+            const pill = document.getElementById('dock-active-board-pill');
+            if (pill) pill.textContent = `Lousa: ${label}`;
+
+            const dockLockBtn = document.getElementById('dock-lock-btn');
+            if (dockLockBtn) {
+                if (lockedBoardId === activeBoardId) {
+                    dockLockBtn.textContent = '🔓 Destravar Tela';
+                    dockLockBtn.className = 'text-xs font-bold bg-amber-400 text-slate-900 px-3 py-1 rounded-full shadow-sm';
+                } else {
+                    dockLockBtn.textContent = '🔒 Travar Tela';
+                    dockLockBtn.className = 'text-xs font-bold bg-indigo-600 text-white px-3 py-1 rounded-full shadow-sm';
+                }
+            }
+        }
+
+        window.lockBoard = function(secId, silent = false) {
+            if (lockedBoardId && lockedBoardId !== secId) {
+                unlockPageScroll(true);
+            }
+            setActiveBoard(secId);
+
+            if (!document.body.classList.contains('scroll-locked')) {
+                savedScrollY = window.scrollY || window.pageYOffset || 0;
+                document.body.style.top = `-${savedScrollY}px`;
+                document.body.classList.add('scroll-locked');
+            }
+
+            lockedBoardId = secId;
+
+            const wrapper = document.getElementById(`board-wrapper-${secId}`);
+            if (wrapper) wrapper.classList.add('board-locked');
+
+            const btn = document.getElementById(`board-lock-btn-${secId}`);
+            if (btn) {
+                btn.textContent = '🔓 Destravar Página';
+                btn.className = 'text-xs font-bold bg-amber-400 hover:bg-amber-300 text-slate-900 px-3.5 py-1.5 rounded-full shadow-sm transition';
+            }
+
+            const status = document.getElementById(`board-status-${secId}`);
+            if (status) {
+                status.textContent = '🔒 TELA TRAVADA! Pode desenhar à vontade sem a página mexer. Toque em "Destravar" para rolar.';
+            }
+
+            const banner = document.getElementById('lock-top-banner');
+            const bannerName = document.getElementById('locked-board-name');
+            if (bannerName) bannerName.textContent = secId.toUpperCase();
+            if (banner) banner.classList.add('visible');
+
+            updateActiveBoardIndicators();
+            if (!silent) {
+                playSound('pop');
+                showToast(`🔒 Tela travada na Lousa ${secId.toUpperCase()}! Pode escrever!`);
+            }
+        };
+
+        window.unlockPageScroll = function(silent = false) {
+            if (!lockedBoardId && !document.body.classList.contains('scroll-locked')) return;
+            const prevId = lockedBoardId;
+            lockedBoardId = null;
+
+            document.body.classList.remove('scroll-locked');
+            document.body.style.top = '';
+            window.scrollTo(0, savedScrollY);
+
+            if (prevId) {
+                const wrapper = document.getElementById(`board-wrapper-${prevId}`);
+                if (wrapper) wrapper.classList.remove('board-locked');
+
+                const btn = document.getElementById(`board-lock-btn-${prevId}`);
+                if (btn) {
+                    btn.textContent = '🔒 Travar Tela p/ Escrever';
+                    btn.className = 'text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-1.5 rounded-full shadow-sm transition';
+                }
+
+                const status = document.getElementById(`board-status-${prevId}`);
+                if (status) {
+                    status.textContent = '💡 Dica: Ao tocar na lousa, a página trava automaticamente para você desenhar sem rolar!';
+                }
+            }
+
+            const banner = document.getElementById('lock-top-banner');
+            if (banner) banner.classList.remove('visible');
+
+            updateActiveBoardIndicators();
+            if (!silent) {
+                playSound('pop');
+                showToast('🔓 Página destravada! Já pode rolar normalmente.');
+            }
+        };
+
+        window.toggleBoardLock = function(secId) {
+            if (lockedBoardId === secId) {
+                unlockPageScroll();
+            } else {
+                lockBoard(secId);
+            }
+        };
+
+        window.toggleActiveBoardLock = function() {
+            toggleBoardLock(activeBoardId);
+        };
+
+        window.toggleToolDock = function(forceState = null) {
+            const dock = document.getElementById('floating-dock');
+            if (!dock) return;
+            const shouldOpen = forceState !== null ? forceState : dock.classList.contains('dock-hidden');
+            dock.classList.toggle('dock-hidden', !shouldOpen);
+            if (forceState === null) playSound('pop');
+        };
+
+        window.openToolsForBoard = function(secId, tab = 'draw') {
+            setActiveBoard(secId);
+            switchDockTab(tab);
+            toggleToolDock(true);
+        };
+
+        window.switchDockTab = function(tab) {
+            ['draw', 'shapes', 'letters'].forEach(t => {
+                const panel = document.getElementById(`dock-tab-${t}`);
+                const btn = document.getElementById(`tab-btn-${t}`);
+                if (panel) panel.classList.toggle('hidden', t !== tab);
+                if (btn) {
+                    btn.className = t === tab
+                        ? 'kids-font py-2 px-2 rounded-xl text-sm font-bold bg-purple-600 text-white shadow-sm transition'
+                        : 'kids-font py-2 px-2 rounded-xl text-sm font-bold bg-purple-50 text-purple-700 hover:bg-purple-100 transition';
+                }
+            });
+            playSound('pop');
+        };
+
+        window.setTool = function(mode) {
+            toolState.mode = mode;
+            ['pen', 'marker', 'eraser', 'move'].forEach(m => {
+                const btn = document.getElementById(`tool-${m}`);
+                if (btn) {
+                    btn.className = m === mode
+                        ? 'px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-600 text-white shadow-sm'
+                        : 'px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700';
+                }
+            });
+            sectionsMeta.forEach(s => {
+                const c = document.getElementById(`canvas-${s.id}`);
+                if (c) c.style.cursor = mode === 'move' ? 'default' : 'crosshair';
+            });
+            playSound('pop');
+        };
+
+        window.setBrushSize = function(sz) {
+            toolState.size = sz;
+            [4, 8, 16].forEach(s => {
+                const btn = document.getElementById(`size-${s}`);
+                if (btn) {
+                    btn.className = s === sz
+                        ? 'px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-600 text-white border border-indigo-600'
+                        : 'px-2.5 py-1 rounded-lg text-xs font-bold bg-white border border-slate-200';
+                }
+            });
+            playSound('pop');
+        };
+
+        window.setBrushColor = function(hex) {
+            toolState.color = hex;
+            if (toolState.mode === 'eraser') setTool('pen');
+            document.querySelectorAll('.color-swatch').forEach(el => {
+                el.classList.toggle('active-swatch', el.dataset.color === hex);
+            });
+            renderShapesPalette();
+            playSound('pop');
+        };
+
+        function renderToolPalettes() {
+            const paletteHTML = PALETTE_COLORS.map(c =>
+                `<button onclick="setBrushColor('${c.hex}')" data-color="${c.hex}" class="color-swatch ${c.hex === toolState.color ? 'active-swatch' : ''}" style="background-color: ${c.hex};" title="${c.name}" aria-label="Cor ${c.name}"></button>`
+            ).join('');
+            document.getElementById('color-palette').innerHTML = paletteHTML;
+            document.getElementById('shapes-color-palette').innerHTML = paletteHTML;
+
+            renderShapesPalette();
+
+            const sylColors = ['#ef4444', '#3b82f6', '#22c55e', '#f97316', '#9333ea', '#d97706', '#ec4899', '#0ea5e9'];
+            const quickSyllables = ['CA', 'CE', 'CI', 'CO', 'CU', 'CÃO', 'SA', 'LA', 'LO', 'MA', 'NA', 'RA', 'DA', 'TA', 'BO', 'PO', 'NE', 'JA'];
+            document.getElementById('kbd-syllables').innerHTML = quickSyllables.map((syl, i) => {
+                const bg = sylColors[i % sylColors.length];
+                return `<button onclick="addLetterTile('${syl}', '${bg}')" class="kbd-letter-btn" style="background-color: ${bg};">${syl}</button>`;
+            }).join('');
+
+            const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZÁÉÍÓÚÂÊÔÃÕÇ'.split('');
+            document.getElementById('kbd-alphabet').innerHTML = alphabet.map((ch, i) => {
+                const bg = sylColors[i % sylColors.length];
+                return `<button onclick="addLetterTile('${ch}', '${bg}')" class="kbd-letter-btn" style="background-color: ${bg};">${ch}</button>`;
+            }).join('');
+        }
+
+        function renderShapesPalette() {
+            const container = document.getElementById('shapes-palette');
+            if (!container) return;
+            container.innerHTML = SHAPES_LIST.map(sh => `
+                <button onclick="addShapeTile('${sh.id}')" class="bg-slate-50 hover:bg-indigo-50 border-2 border-slate-200 rounded-2xl p-2 flex flex-col items-center gap-1 transition active:scale-90">
+                    <div class="w-10 h-10">${sh.svg(toolState.color)}</div>
+                    <span class="text-[11px] font-bold text-slate-600">${sh.pt}</span>
+                </button>
+            `).join('');
+        }
+
+        function clearSelectedTiles(secId) {
+            const layer = document.getElementById(`items-layer-${secId}`);
+            if (!layer) return;
+            layer.querySelectorAll('.selected-tile').forEach(el => el.classList.remove('selected-tile'));
+        }
+
+        function attachDraggableBehavior(tile, secId, onTapSpeak) {
+            let dragging = false;
+            let moved = false;
+            let startClientX = 0, startClientY = 0;
+            let startLeft = 0, startTop = 0;
+
+            const onDown = (e) => {
+                if (e.target.classList.contains('tile-delete-btn')) return;
+                if (lockedBoardId !== secId) lockBoard(secId, true);
+                e.stopPropagation();
+                if (e.cancelable) e.preventDefault();
+
+                clearSelectedTiles(secId);
+                tile.classList.add('selected-tile', 'dragging');
+
+                dragging = true;
+                moved = false;
+                const pt = e.touches ? e.touches[0] : e;
+                startClientX = pt.clientX;
+                startClientY = pt.clientY;
+                startLeft = parseFloat(tile.style.left) || 0;
+                startTop = parseFloat(tile.style.top) || 0;
+
+                if (tile.setPointerCapture && e.pointerId !== undefined) {
+                    try { tile.setPointerCapture(e.pointerId); } catch (_) {}
+                }
+            };
+
+            const onMove = (e) => {
+                if (!dragging) return;
+                e.stopPropagation();
+                if (e.cancelable) e.preventDefault();
+
+                const pt = e.touches ? e.touches[0] : e;
+                const dx = pt.clientX - startClientX;
+                const dy = pt.clientY - startClientY;
+                if (Math.abs(dx) > 4 || Math.abs(dy) > 4) moved = true;
+
+                const stage = document.getElementById(`board-stage-${secId}`);
+                const maxX = Math.max(0, stage.clientWidth - tile.offsetWidth);
+                const maxY = Math.max(0, stage.clientHeight - tile.offsetHeight);
+
+                const newLeft = Math.min(maxX, Math.max(0, startLeft + dx));
+                const newTop = Math.min(maxY, Math.max(0, startTop + dy));
+
+                tile.style.left = `${newLeft}px`;
+                tile.style.top = `${newTop}px`;
+            };
+
+            const onUp = () => {
+                if (!dragging) return;
+                dragging = false;
+                tile.classList.remove('dragging');
+                if (!moved && onTapSpeak) {
+                    onTapSpeak();
+                }
+            };
+
+            tile.addEventListener('pointerdown', onDown, { passive: false });
+            tile.addEventListener('pointermove', onMove, { passive: false });
+            tile.addEventListener('pointerup', onUp);
+            tile.addEventListener('pointercancel', onUp);
+        }
+
+        window.addLetterTile = function(text, bgColor) {
+            initAudio();
+            playSound('pop');
+            const secId = activeBoardId;
+            const b = boards[secId];
+            const layer = document.getElementById(`items-layer-${secId}`);
+            const stage = document.getElementById(`board-stage-${secId}`);
+            if (!b || !layer || !stage) return;
+
+            const tile = document.createElement('div');
+            tile.className = 'draggable-tile letter-magnet animate-pop';
+            tile.dataset.letter = text;
+            tile.style.backgroundColor = bgColor;
+
+            const estWidth = Math.max(54, text.length * 24 + 20);
+            if (b.nextTileX + estWidth > stage.clientWidth - 20) {
+                b.nextTileX = 24;
+                b.nextTileY += 68;
+                if (b.nextTileY > stage.clientHeight - 70) b.nextTileY = 26;
+            }
+            tile.style.left = `${b.nextTileX}px`;
+            tile.style.top = `${b.nextTileY}px`;
+            b.nextTileX += estWidth + 8;
+
+            tile.innerHTML = `<span>${text}</span><button class="tile-delete-btn" title="Remover" aria-label="Remover">×</button>`;
+            tile.querySelector('.tile-delete-btn').addEventListener('click', (e) => {
+                e.stopPropagation();
+                playSound('pop');
+                tile.remove();
+            });
+
+            attachDraggableBehavior(tile, secId, () => {
+                playSound('pop');
+                speakText(text.toLowerCase(), 'pt-BR', 0.95);
+            });
+
+            layer.appendChild(tile);
+            speakText(text.toLowerCase(), 'pt-BR', 0.98);
+        };
+
+        window.addShapeTile = function(shapeId) {
+            initAudio();
+            playSound('pop');
+            const shape = SHAPES_LIST.find(s => s.id === shapeId);
+            const secId = activeBoardId;
+            const layer = document.getElementById(`items-layer-${secId}`);
+            const stage = document.getElementById(`board-stage-${secId}`);
+            if (!shape || !layer || !stage) return;
+
+            const tile = document.createElement('div');
+            tile.className = 'draggable-tile shape-magnet animate-pop';
+            const rx = Math.max(20, Math.floor(Math.random() * (stage.clientWidth - 110)));
+            const ry = Math.max(20, Math.floor(Math.random() * (stage.clientHeight - 110)));
+            tile.style.left = `${rx}px`;
+            tile.style.top = `${ry}px`;
+
+            tile.innerHTML = `${shape.svg(toolState.color)}<button class="tile-delete-btn" title="Remover" aria-label="Remover">×</button>`;
+            tile.querySelector('.tile-delete-btn').addEventListener('click', (e) => {
+                e.stopPropagation();
+                playSound('pop');
+                tile.remove();
+            });
+
+            const sayShape = () => {
+                speakSequence([
+                    { text: shape.pt, lang: 'pt-BR' },
+                    { text: shape.en, lang: 'en-US' }
+                ]);
+            };
+
+            attachDraggableBehavior(tile, secId, () => {
+                playSound('pop');
+                sayShape();
+            });
+
+            layer.appendChild(tile);
+            sayShape();
+        };
+
+        window.readBoardLetters = function(secId) {
+            const layer = document.getElementById(`items-layer-${secId}`);
+            if (!layer) return;
+            const tiles = Array.from(layer.querySelectorAll('.letter-magnet'));
+            if (tiles.length === 0) {
+                showToast('Adicione letras do Caça-Letras na lousa primeiro! 🔤');
+                speakPT('Coloque algumas letras coloridas na lousa para eu ler para você!');
+                return;
+            }
+
+            tiles.sort((a, b) => {
+                const topA = Math.round((parseFloat(a.style.top) || 0) / 45);
+                const topB = Math.round((parseFloat(b.style.top) || 0) / 45);
+                if (topA !== topB) return topA - topB;
+                return (parseFloat(a.style.left) || 0) - (parseFloat(b.style.left) || 0);
+            });
+
+            const word = tiles.map(t => t.dataset.letter).join('');
+            playSound('success');
+            showToast(`🔊 Palavra montada: ${word}`);
+            speakText(word.toLowerCase(), 'pt-BR', 0.85);
+        };
+
+        function setupSectionObserver() {
+            if (!('IntersectionObserver' in window)) return;
+            const observer = new IntersectionObserver((entries) => {
+                if (lockedBoardId) return;
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const secId = entry.target.id.replace('sec-', '');
+                        if (boards[secId]) setActiveBoard(secId);
+                    }
+                });
+            }, { threshold: 0.3 });
+
+            sectionsMeta.forEach(s => {
+                const el = document.getElementById(`sec-${s.id}`);
+                if (el) observer.observe(el);
+            });
+        }
+
+        // Garante que mesmo usando Ctrl+P / Imprimir do navegador, os desenhos sejam capturados
+        window.addEventListener('beforeprint', () => {
+            sectionsMeta.forEach(sec => {
+                const b = boards[sec.id];
+                const imgEl = document.getElementById(`print-img-${sec.id}`);
+                if (b && b.canvas && imgEl) {
+                    try { imgEl.src = b.canvas.toDataURL('image/png'); } catch (_) {}
+                }
+            });
+        });
+
+        window.addEventListener('load', () => {
+            renderAllSections();
+            loadStudentName();
+            setupSectionObserver();
+            setTimeout(loadVoices, 400);
+            setTimeout(loadVoices, 1200);
+            document.body.addEventListener('pointerdown', initAudio, { once: true });
+        });
     </script>
 </body>
 </html>
